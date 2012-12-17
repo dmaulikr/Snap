@@ -113,8 +113,4 @@
 {
 }
 
-- (void)viewDidUnload {
-    [self setButtons:nil];
-    [super viewDidUnload];
-}
 @end
