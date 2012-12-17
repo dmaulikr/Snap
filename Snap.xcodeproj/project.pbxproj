@@ -59,6 +59,9 @@
 		D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */; };
 		D2B4FA62167FC31C00B7BE0D /* HostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA61167FC31C00B7BE0D /* HostViewController.m */; };
 		D2B4FA66167FC36700B7BE0D /* HostViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B4FA64167FC36700B7BE0D /* HostViewController.xib */; };
+		D2B4FA71167FDB5A00B7BE0D /* JoinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA70167FDB5A00B7BE0D /* JoinViewController.m */; };
+		D2B4FA75167FDB9A00B7BE0D /* JoinViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B4FA73167FDB9A00B7BE0D /* JoinViewController.xib */; };
+		D2B4FA78167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA77167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m */; };
 		D2F1757C167F5B76008C6A9B /* Action_Man.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2F1757B167F5B76008C6A9B /* Action_Man.ttf */; };
 		D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */; };
 /* End PBXBuildFile section */
@@ -123,6 +126,11 @@
 		D2B4FA60167FC31C00B7BE0D /* HostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HostViewController.h; sourceTree = "<group>"; };
 		D2B4FA61167FC31C00B7BE0D /* HostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HostViewController.m; sourceTree = "<group>"; };
 		D2B4FA65167FC36700B7BE0D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Snap/en.lproj/HostViewController.xib; sourceTree = "<group>"; };
+		D2B4FA6F167FDB5A00B7BE0D /* JoinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoinViewController.h; sourceTree = "<group>"; };
+		D2B4FA70167FDB5A00B7BE0D /* JoinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoinViewController.m; sourceTree = "<group>"; };
+		D2B4FA74167FDB9A00B7BE0D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Snap/en.lproj/JoinViewController.xib; sourceTree = "<group>"; };
+		D2B4FA76167FDDCB00B7BE0D /* UIViewController+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SnapAdditions.h"; sourceTree = "<group>"; };
+		D2B4FA77167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SnapAdditions.m"; sourceTree = "<group>"; };
 		D2F1757B167F5B76008C6A9B /* Action_Man.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Action_Man.ttf; sourceTree = SOURCE_ROOT; };
 		D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SnapAdditions.h"; sourceTree = "<group>"; };
 		D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SnapAdditions.m"; sourceTree = "<group>"; };
@@ -242,10 +250,12 @@
 		D23B0788167F54CF00A05362 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				7BF49E2E14E1FCF400AB8472 /* MainViewController.h */,
-				7BF49E2F14E1FCF400AB8472 /* MainViewController.m */,
 				D2B4FA60167FC31C00B7BE0D /* HostViewController.h */,
 				D2B4FA61167FC31C00B7BE0D /* HostViewController.m */,
+				D2B4FA6F167FDB5A00B7BE0D /* JoinViewController.h */,
+				D2B4FA70167FDB5A00B7BE0D /* JoinViewController.m */,
+				7BF49E2E14E1FCF400AB8472 /* MainViewController.h */,
+				7BF49E2F14E1FCF400AB8472 /* MainViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -253,8 +263,9 @@
 		D23B0789167F54D600A05362 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				7BF49E3314E1FD3200AB8472 /* MainViewController.xib */,
 				D2B4FA64167FC36700B7BE0D /* HostViewController.xib */,
+				D2B4FA73167FDB9A00B7BE0D /* JoinViewController.xib */,
+				7BF49E3314E1FD3200AB8472 /* MainViewController.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -273,6 +284,8 @@
 				D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */,
 				D28BF844167F98BA00988577 /* UIButton+SnapAdditions.h */,
 				D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */,
+				D2B4FA76167FDDCB00B7BE0D /* UIViewController+SnapAdditions.h */,
+				D2B4FA77167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -372,6 +385,7 @@
 				D23B0786167F540700A05362 /* Default-568h@2x.png in Resources */,
 				D2F1757C167F5B76008C6A9B /* Action_Man.ttf in Resources */,
 				D2B4FA66167FC36700B7BE0D /* HostViewController.xib in Resources */,
+				D2B4FA75167FDB9A00B7BE0D /* JoinViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +402,8 @@
 				D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */,
 				D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */,
 				D2B4FA62167FC31C00B7BE0D /* HostViewController.m in Sources */,
+				D2B4FA71167FDB5A00B7BE0D /* JoinViewController.m in Sources */,
+				D2B4FA78167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +433,14 @@
 				D2B4FA65167FC36700B7BE0D /* en */,
 			);
 			name = HostViewController.xib;
+			sourceTree = "<group>";
+		};
+		D2B4FA73167FDB9A00B7BE0D /* JoinViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D2B4FA74167FDB9A00B7BE0D /* en */,
+			);
+			name = JoinViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

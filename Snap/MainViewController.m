@@ -1,8 +1,9 @@
 
 #import "MainViewController.h"
 #import "HostViewController.h"
+#import "JoinViewController.h"
 
-@interface MainViewController () <HostViewControllerDelegate>
+@interface MainViewController () <HostViewControllerDelegate, JoinViewControllerDelegate>
 @property (nonatomic, weak) IBOutlet UIImageView *sImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *nImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *aImageView;
@@ -154,6 +155,13 @@
 
 - (IBAction)joinGameAction:(id)sender
 {
+    if (_buttonsEnabled) {
+        [self performExitAnimationWithCompletionBlock:^(BOOL finished) {
+            JoinViewController *controller = [[JoinViewController alloc] initWithNibName:@"JoinViewController" bundle:nil];
+            controller.delegate = self;
+            [self presentViewController:controller animated:NO completion:nil];
+        }];
+    }
 }
 
 - (IBAction)singlePlayerGameAction:(id)sender
@@ -166,5 +174,13 @@
 {
     [self dismissViewControllerAnimated:NO completion:nil];
 }
+
+#pragma mark - JoinViewControllerDelegate
+
+- (void)joinViewControllerDidCancel:(JoinViewController *)controller
+{
+    [self dismissViewControllerAnimated:NO completion:nil];
+}
+
 
 @end
