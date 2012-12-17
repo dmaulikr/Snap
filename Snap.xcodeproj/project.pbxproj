@@ -56,6 +56,9 @@
 		7BF49EB014EBBC7400AB8472 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EAE14EBBC7400AB8472 /* Default.png */; };
 		7BF49EB114EBBC7400AB8472 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EAF14EBBC7400AB8472 /* Default@2x.png */; };
 		D23B0786167F540700A05362 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D23B0785167F540700A05362 /* Default-568h@2x.png */; };
+		D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */; };
+		D2F1757C167F5B76008C6A9B /* Action_Man.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2F1757B167F5B76008C6A9B /* Action_Man.ttf */; };
+		D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -113,6 +116,11 @@
 		7BF49EAE14EBBC7400AB8472 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		7BF49EAF14EBBC7400AB8472 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		D23B0785167F540700A05362 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		D28BF844167F98BA00988577 /* UIButton+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SnapAdditions.h"; sourceTree = "<group>"; };
+		D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SnapAdditions.m"; sourceTree = "<group>"; };
+		D2F1757B167F5B76008C6A9B /* Action_Man.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Action_Man.ttf; sourceTree = SOURCE_ROOT; };
+		D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SnapAdditions.h"; sourceTree = "<group>"; };
+		D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SnapAdditions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,8 +220,10 @@
 		7B67D9E114C9C6AD00254619 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D2F1757B167F5B76008C6A9B /* Action_Man.ttf */,
 				7B67D9E914C9C6AD00254619 /* AppDelegate.h */,
 				7B67D9EA14C9C6AD00254619 /* AppDelegate.m */,
+				D2F17581167F5BDD008C6A9B /* Categories */,
 				7B67D9E314C9C6AD00254619 /* InfoPlist.strings */,
 				7B67D9E614C9C6AD00254619 /* main.m */,
 				7B67D9E214C9C6AD00254619 /* Snap-Info.plist */,
@@ -245,6 +255,17 @@
 			children = (
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		D2F17581167F5BDD008C6A9B /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */,
+				D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */,
+				D28BF844167F98BA00988577 /* UIButton+SnapAdditions.h */,
+				D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -340,6 +361,7 @@
 				7B01147A151B432C00A0616D /* Icon-72@2x.png in Resources */,
 				7B01147B151B432C00A0616D /* Icon-Small-50@2x.png in Resources */,
 				D23B0786167F540700A05362 /* Default-568h@2x.png in Resources */,
+				D2F1757C167F5B76008C6A9B /* Action_Man.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,6 +375,8 @@
 				7B67D9E714C9C6AD00254619 /* main.m in Sources */,
 				7B67D9EB14C9C6AD00254619 /* AppDelegate.m in Sources */,
 				7BF49E3114E1FCF400AB8472 /* MainViewController.m in Sources */,
+				D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */,
+				D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,9 +15,12 @@
 
 @implementation MainViewController
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (void)viewDidLoad
 {
-	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    [super viewDidLoad];
+    [self.hostGameButton rw_applySnapStyle];
+    [self.joinGameButton rw_applySnapStyle];
+    [self.singlePlayerGameButton rw_applySnapStyle];
 }
 
 - (IBAction)hostGameAction:(id)sender

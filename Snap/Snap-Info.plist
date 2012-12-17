@@ -46,6 +46,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Action_Man.ttf</string>
+	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
 </dict>
