@@ -57,6 +57,8 @@
 		7BF49EB114EBBC7400AB8472 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EAF14EBBC7400AB8472 /* Default@2x.png */; };
 		D23B0786167F540700A05362 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D23B0785167F540700A05362 /* Default-568h@2x.png */; };
 		D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */; };
+		D2B4FA62167FC31C00B7BE0D /* HostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA61167FC31C00B7BE0D /* HostViewController.m */; };
+		D2B4FA66167FC36700B7BE0D /* HostViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B4FA64167FC36700B7BE0D /* HostViewController.xib */; };
 		D2F1757C167F5B76008C6A9B /* Action_Man.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2F1757B167F5B76008C6A9B /* Action_Man.ttf */; };
 		D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */; };
 /* End PBXBuildFile section */
@@ -118,6 +120,9 @@
 		D23B0785167F540700A05362 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		D28BF844167F98BA00988577 /* UIButton+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SnapAdditions.h"; sourceTree = "<group>"; };
 		D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SnapAdditions.m"; sourceTree = "<group>"; };
+		D2B4FA60167FC31C00B7BE0D /* HostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HostViewController.h; sourceTree = "<group>"; };
+		D2B4FA61167FC31C00B7BE0D /* HostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HostViewController.m; sourceTree = "<group>"; };
+		D2B4FA65167FC36700B7BE0D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Snap/en.lproj/HostViewController.xib; sourceTree = "<group>"; };
 		D2F1757B167F5B76008C6A9B /* Action_Man.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Action_Man.ttf; sourceTree = SOURCE_ROOT; };
 		D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SnapAdditions.h"; sourceTree = "<group>"; };
 		D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SnapAdditions.m"; sourceTree = "<group>"; };
@@ -182,7 +187,8 @@
 				7B011468151B14EA00A0616D /* TextField.png */,
 				7B011469151B14EA00A0616D /* TextField@2x.png */,
 			);
-			path = Images;
+			name = Images;
+			path = ../Images;
 			sourceTree = "<group>";
 		};
 		7B67D9CB14C9C6AC00254619 = {
@@ -192,7 +198,6 @@
 				D23B0789167F54D600A05362 /* Views */,
 				D23B0788167F54CF00A05362 /* Controllers */,
 				7B67D9E114C9C6AD00254619 /* Supporting Files */,
-				7B2B314014CC726A0002F476 /* Images */,
 				7B67D9D914C9C6AD00254619 /* Frameworks */,
 				7B67D9D714C9C6AD00254619 /* Products */,
 			);
@@ -224,6 +229,7 @@
 				7B67D9E914C9C6AD00254619 /* AppDelegate.h */,
 				7B67D9EA14C9C6AD00254619 /* AppDelegate.m */,
 				D2F17581167F5BDD008C6A9B /* Categories */,
+				7B2B314014CC726A0002F476 /* Images */,
 				7B67D9E314C9C6AD00254619 /* InfoPlist.strings */,
 				7B67D9E614C9C6AD00254619 /* main.m */,
 				7B67D9E214C9C6AD00254619 /* Snap-Info.plist */,
@@ -238,6 +244,8 @@
 			children = (
 				7BF49E2E14E1FCF400AB8472 /* MainViewController.h */,
 				7BF49E2F14E1FCF400AB8472 /* MainViewController.m */,
+				D2B4FA60167FC31C00B7BE0D /* HostViewController.h */,
+				D2B4FA61167FC31C00B7BE0D /* HostViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -246,6 +254,7 @@
 			isa = PBXGroup;
 			children = (
 				7BF49E3314E1FD3200AB8472 /* MainViewController.xib */,
+				D2B4FA64167FC36700B7BE0D /* HostViewController.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -362,6 +371,7 @@
 				7B01147B151B432C00A0616D /* Icon-Small-50@2x.png in Resources */,
 				D23B0786167F540700A05362 /* Default-568h@2x.png in Resources */,
 				D2F1757C167F5B76008C6A9B /* Action_Man.ttf in Resources */,
+				D2B4FA66167FC36700B7BE0D /* HostViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,6 +387,7 @@
 				7BF49E3114E1FCF400AB8472 /* MainViewController.m in Sources */,
 				D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */,
 				D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */,
+				D2B4FA62167FC31C00B7BE0D /* HostViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,6 +409,14 @@
 			);
 			name = MainViewController.xib;
 			path = Snap;
+			sourceTree = "<group>";
+		};
+		D2B4FA64167FC36700B7BE0D /* HostViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D2B4FA65167FC36700B7BE0D /* en */,
+			);
+			name = HostViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

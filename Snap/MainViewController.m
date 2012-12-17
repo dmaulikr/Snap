@@ -1,7 +1,8 @@
 
 #import "MainViewController.h"
+#import "HostViewController.h"
 
-@interface MainViewController ()
+@interface MainViewController () <HostViewControllerDelegate>
 @property (nonatomic, weak) IBOutlet UIImageView *sImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *nImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *aImageView;
@@ -23,9 +24,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.hostGameButton rw_applySnapStyle];
-    [self.joinGameButton rw_applySnapStyle];
-    [self.singlePlayerGameButton rw_applySnapStyle];
+    [self.buttons enumerateObjectsUsingBlock:^(UIButton *button, NSUInteger idx, BOOL *stop) {
+        [button rw_applySnapStyle];
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -38,6 +39,13 @@
 {
     [super viewDidAppear:animated];
     [self performIntroAnimation];
+}
+
+- (void)dealloc
+{
+    #ifdef DEBUG
+    NSLog(@"dealloc %@", self);
+    #endif
 }
 
 #pragma mark - Private methods
@@ -59,19 +67,18 @@
 
 - (void)performIntroAnimation
 {
-    // Animate up and fan out cards
-    
     // Horizontally centered, vertically below the bottom of the screen
     CGPoint point = CGPointMake(self.view.bounds.size.width / 2.0f, self.view.bounds.size.height * 2.0f);
     
-    [self.cards enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [obj setCenter:point];
+    [self.cards enumerateObjectsUsingBlock:^(UIImageView *card, NSUInteger idx, BOOL *stop) {
+        card.center = point;
     }];
     
-    [self.cards enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [obj setHidden:NO];
+    [self.cards enumerateObjectsUsingBlock:^(UIImageView *card, NSUInteger idx, BOOL *stop) {
+        card.hidden = NO;
     }];
     
+    // Animate cards onscreen
     [UIView animateWithDuration:0.65f animations:^{
         self.sImageView.center = CGPointMake(80.0f, 108.0f);
         self.sImageView.transform = CGAffineTransformMakeRotation(-0.22f);
@@ -91,11 +98,44 @@
     
     // Fade in buttons
     [UIView animateWithDuration:0.5f delay:1.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-        [self.buttons enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [obj setAlpha:1.0f];
+        [self.buttons enumerateObjectsUsingBlock:^(UIButton *button, NSUInteger idx, BOOL *stop) {
+            button.alpha = 1.0f;
         }];
     } completion:^(BOOL finished) {
         _buttonsEnabled = YES;
+    }];
+}
+
+#pragma mark - Animate presenting HostViewController
+
+- (void)performExitAnimationWithCompletionBlock:(void (^)(BOOL))block
+{
+    _buttonsEnabled = NO;
+    
+    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [self.cards enumerateObjectsUsingBlock:^(UIImageView *card, NSUInteger idx, BOOL *stop) {
+            if (![card isEqual:self.aImageView]) {
+                card.center = self.aImageView.center;
+                card.transform = self.aImageView.transform;
+            }
+        }];
+    } completion:^(BOOL finished) {
+        // Horizontally centered, vertically above the top of the screen
+        CGPoint point = CGPointMake(self.aImageView.center.x, self.view.bounds.size.height * -2.0f);
+        
+        // Animate cards offscreen
+        [UIView animateWithDuration:1.0f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.cards enumerateObjectsUsingBlock:^(UIImageView *card, NSUInteger idx, BOOL *stop) {
+                card.center = point;
+            }];
+        } completion:block];
+        
+        // Fade out buttons
+        [UIView animateWithDuration:1.0f delay:0.3f options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self.buttons enumerateObjectsUsingBlock:^(UIButton *button, NSUInteger idx, BOOL *stop) {
+                button.alpha = 0.0f;
+            }];
+        } completion:nil];
     }];
 }
 
@@ -103,6 +143,13 @@
 
 - (IBAction)hostGameAction:(id)sender
 {
+    if (_buttonsEnabled) {
+        [self performExitAnimationWithCompletionBlock:^(BOOL finished) {
+            HostViewController *controller = [[HostViewController alloc] initWithNibName:@"HostViewController" bundle:nil];
+            controller.delegate = self;
+            [self presentViewController:controller animated:NO completion:nil];
+        }];
+    }
 }
 
 - (IBAction)joinGameAction:(id)sender
@@ -111,6 +158,13 @@
 
 - (IBAction)singlePlayerGameAction:(id)sender
 {
+}
+
+#pragma mark - HostViewControllerDelegate
+
+- (void)hostViewControllerDidCancel:(HostViewController *)controller
+{
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end
