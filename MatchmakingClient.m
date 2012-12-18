@@ -8,19 +8,48 @@
 
 #import "MatchmakingClient.h"
 
+typedef enum {
+    ClientStateIdle,
+    ClientStateSearchingForServers,
+    ClientStateConnecting,
+    ClientStateConnected
+} ClientState;
+
 @interface MatchmakingClient () <GKSessionDelegate>
 @property (nonatomic, strong) NSMutableArray *availableServers;
 @property (nonatomic, strong) GKSession *session;
+@property (nonatomic, assign) ClientState clientState;
+@property (nonatomic, copy) NSString *serverPeerID;
 @end
 
 @implementation MatchmakingClient
 
+- (id)init
+{
+    if (self = [super init]) {
+        _clientState = ClientStateIdle;
+    }
+    
+    return self;
+}
+
 - (void)startSearchingForServersWithSessionID:(NSString *)sessionID
 {
-    self.availableServers = [NSMutableArray arrayWithCapacity:10];
-    self.session = [[GKSession alloc] initWithSessionID:sessionID displayName:nil sessionMode:GKSessionModeClient];
-    self.session.delegate = self;
-    self.session.available = YES;
+    if (self.clientState == ClientStateIdle) {
+        self.clientState = ClientStateSearchingForServers;
+        self.availableServers = [NSMutableArray arrayWithCapacity:10];
+        self.session = [[GKSession alloc] initWithSessionID:sessionID displayName:nil sessionMode:GKSessionModeClient];
+        self.session.delegate = self;
+        self.session.available = YES;
+    }
+}
+
+- (void)connectToServerWithPeerID:(NSString *)peerID
+{
+    NSAssert(self.clientState == ClientStateSearchingForServers, @"Wrong state");
+    self.clientState = ClientStateConnecting;
+    self.serverPeerID = peerID;
+    [self.session connectToPeer:peerID withTimeout:self.session.disconnectTimeout];
 }
 
 #pragma mark - GKSessionDelegate
@@ -34,17 +63,21 @@
     switch (state) {
             // Client discovered a new server is available
         case GKPeerStateAvailable:
-            if (![self.availableServers containsObject:peerID]) {
-                [self.availableServers addObject:peerID];
-                [self.delegate matchmakingClient:self serverBecameAvailable:peerID];
+            if (self.clientState == ClientStateSearchingForServers) {
+                if (![self.availableServers containsObject:peerID]) {
+                    [self.availableServers addObject:peerID];
+                    [self.delegate matchmakingClient:self serverBecameAvailable:peerID];
+                }
             }
             break;
             
             // Client discovered a previously known server is no longer available
         case GKPeerStateUnavailable:
-            if ([self.availableServers containsObject:peerID]) {
-                [self.availableServers removeObject:peerID];
-                [self.delegate matchmakingClient:self serverBecameUnavailable:peerID];
+            if (self.clientState == ClientStateSearchingForServers) {
+                if ([self.availableServers containsObject:peerID]) {
+                    [self.availableServers removeObject:peerID];
+                    [self.delegate matchmakingClient:self serverBecameUnavailable:peerID];
+                }
             }
             break;
             

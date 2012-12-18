@@ -8,8 +8,9 @@
 
 #import "HostViewController.h"
 #import "MatchmakingServer.h"
+#import "PeerCell.h"
 
-@interface HostViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface HostViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, MatchmakingServerDelegate>
 @property (nonatomic, weak) IBOutlet UILabel *headingLabel;
 @property (nonatomic, weak) IBOutlet UILabel *nameLabel;
 @property (nonatomic, weak) IBOutlet UITextField *nameTextField;
@@ -31,6 +32,7 @@
     self.statusLabel.font = [UIFont rw_snapFontWithSize:16.0f];
     [self.startButton rw_applySnapStyle];
     [self rw_addHideKeyboardGestureRecognizerWithTarget:self.nameTextField];
+    [self.tableView registerClass:[PeerCell class] forCellReuseIdentifier:@"PeerCell"];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -39,6 +41,7 @@
     
     if (!self.matchmakingServer) {
         self.matchmakingServer = [MatchmakingServer new];
+        self.matchmakingServer.delegate = self;
         self.matchmakingServer.maxClients = 3;
         [self.matchmakingServer startAcceptingConnectionsForSessionID:SESSION_ID];
         self.nameTextField.placeholder = self.matchmakingServer.session.displayName;
@@ -77,12 +80,38 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 0;
+    if (self.matchmakingServer) {
+        return [self.matchmakingServer.connectedClients count];
+    } else {
+        return 0;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    PeerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PeerCell"];
+    NSString *peerID = self.matchmakingServer.connectedClients[indexPath.row];
+    cell.textLabel.text = [self.matchmakingServer.session displayNameForPeer:peerID];
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return nil;
+}
+
+#pragma mark - MatchmakingServerDelegate
+
+- (void)matchmakingServer:(MatchmakingServer *)server clientDidConnect:(NSString *)peerID
+{
+    [self.tableView reloadData];
+}
+
+- (void)matchmakingServer:(MatchmakingServer *)server clientDidDisconnect:(NSString *)peerID
+{
+    [self.tableView reloadData];
 }
 
 @end

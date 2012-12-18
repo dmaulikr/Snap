@@ -35,7 +35,7 @@
     self.statusLabel.font = [UIFont rw_snapFontWithSize:16.0f];
     self.waitLabel.font = [UIFont rw_snapFontWithSize:18.0f];
     [self rw_addHideKeyboardGestureRecognizerWithTarget:self.nameTextField];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"PeerCell"];
+    [self.tableView registerClass:[PeerCell class] forCellReuseIdentifier:@"PeerCell"];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -86,10 +86,23 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PeerCell"];
+    PeerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PeerCell"];
     NSString *peerID = self.matchmakingClient.availableServers[indexPath.row];
     cell.textLabel.text = [self.matchmakingClient.session displayNameForPeer:peerID];
     return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (self.matchmakingClient) {
+        [self.view addSubview:self.waitView];
+        NSString *peerID = self.matchmakingClient.availableServers[indexPath.row];
+        [self.matchmakingClient connectToServerWithPeerID:peerID];
+    }
 }
 
 #pragma mark - MatchmakingClientDelegate

@@ -22,5 +22,6 @@
 @property (nonatomic, strong, readonly) GKSession *session;
 
 - (void)startSearchingForServersWithSessionID:(NSString *)sessionID;
+- (void)connectToServerWithPeerID:(NSString *)peerID;
 
 @end
