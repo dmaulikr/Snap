@@ -15,12 +15,11 @@
 @property (nonatomic, weak) IBOutlet UIButton *hostGameButton;
 @property (nonatomic, weak) IBOutlet UIButton *joinGameButton;
 @property (nonatomic, weak) IBOutlet UIButton *singlePlayerGameButton;
+
+@property (nonatomic, assign) BOOL buttonsEnabled;
 @end
 
 @implementation MainViewController
-{
-    BOOL _buttonsEnabled;
-}
 
 - (void)viewDidLoad
 {
@@ -63,7 +62,7 @@
         [obj setAlpha:0.0f];
     }];
     
-    _buttonsEnabled = NO;
+    self.buttonsEnabled = NO;
 }
 
 - (void)performIntroAnimation
@@ -103,7 +102,7 @@
             button.alpha = 1.0f;
         }];
     } completion:^(BOOL finished) {
-        _buttonsEnabled = YES;
+        self.buttonsEnabled = YES;
     }];
 }
 
@@ -111,7 +110,7 @@
 
 - (void)performExitAnimationWithCompletionBlock:(void (^)(BOOL))block
 {
-    _buttonsEnabled = NO;
+    self.buttonsEnabled = NO;
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
         [self.cards enumerateObjectsUsingBlock:^(UIImageView *card, NSUInteger idx, BOOL *stop) {
@@ -144,7 +143,7 @@
 
 - (IBAction)hostGameAction:(id)sender
 {
-    if (_buttonsEnabled) {
+    if (self.buttonsEnabled) {
         [self performExitAnimationWithCompletionBlock:^(BOOL finished) {
             HostViewController *controller = [[HostViewController alloc] initWithNibName:@"HostViewController" bundle:nil];
             controller.delegate = self;
@@ -155,7 +154,7 @@
 
 - (IBAction)joinGameAction:(id)sender
 {
-    if (_buttonsEnabled) {
+    if (self.buttonsEnabled) {
         [self performExitAnimationWithCompletionBlock:^(BOOL finished) {
             JoinViewController *controller = [[JoinViewController alloc] initWithNibName:@"JoinViewController" bundle:nil];
             controller.delegate = self;

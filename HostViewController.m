@@ -7,6 +7,7 @@
 //
 
 #import "HostViewController.h"
+#import "MatchmakingServer.h"
 
 @interface HostViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, weak) IBOutlet UILabel *headingLabel;
@@ -15,6 +16,8 @@
 @property (nonatomic, weak) IBOutlet UILabel *statusLabel;
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UIButton *startButton;
+
+@property (nonatomic, strong) MatchmakingServer *matchmakingServer;
 @end
 
 @implementation HostViewController
@@ -28,6 +31,19 @@
     self.statusLabel.font = [UIFont rw_snapFontWithSize:16.0f];
     [self.startButton rw_applySnapStyle];
     [self rw_addHideKeyboardGestureRecognizerWithTarget:self.nameTextField];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (!self.matchmakingServer) {
+        self.matchmakingServer = [MatchmakingServer new];
+        self.matchmakingServer.maxClients = 3;
+        [self.matchmakingServer startAcceptingConnectionsForSessionID:SESSION_ID];
+        self.nameTextField.placeholder = self.matchmakingServer.session.displayName;
+        [self.tableView reloadData];
+    }
 }
 
 - (void)dealloc

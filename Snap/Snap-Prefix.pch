@@ -8,7 +8,11 @@
 #ifdef __OBJC__
 	#import <UIKit/UIKit.h>
 	#import <Foundation/Foundation.h>
+    #import <GameKit/GameKit.h>
+    
     #import "UIButton+SnapAdditions.h"
     #import "UIFont+SnapAdditions.h"
     #import "UIViewController+SnapAdditions.h"
 #endif
+
+#define SESSION_ID @"Snap!"
