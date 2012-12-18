@@ -3,7 +3,7 @@
 //  Snap
 //
 //  Created by Scott Gardner on 12/17/12.
-//  Copyright (c) 2012 Hollance. All rights reserved.
+//  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
 #import "UIButton+SnapAdditions.h"

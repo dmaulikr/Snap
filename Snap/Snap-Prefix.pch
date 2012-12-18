@@ -16,3 +16,9 @@
 #endif
 
 #define SESSION_ID @"Snap!"
+typedef enum {
+    QuitReasonNoNetwork,            // No Wi-Fi or Bluetooth
+    QuitReasonConnectionDropped,    // Communication failure with server
+    QuitReasonUserQuit,             // User terminated the connection
+    QuitReasonServerQuit            // Server intentionally quit the game
+} QuitReason;

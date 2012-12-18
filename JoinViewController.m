@@ -3,7 +3,7 @@
 //  Snap
 //
 //  Created by Scott Gardner on 12/17/12.
-//  Copyright (c) 2012 Hollance. All rights reserved.
+//  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
 #import "JoinViewController.h"
@@ -18,10 +18,11 @@
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UILabel *waitLabel;
 
-// strong because top-level additional view in xib; not necessary for first view because it is retained via self.view
+// This outlet property is marked strong because it is a top-level additional view in xib; this is not necessary for the first view because it is retained via self.view
 @property (nonatomic, strong) IBOutlet UIView *waitView;
 
 @property (nonatomic, strong) MatchmakingClient *matchmakingClient;
+@property (nonatomic, assign) QuitReason quitReason;
 @end
 
 @implementation JoinViewController
@@ -43,6 +44,7 @@
     [super viewDidAppear:animated];
     
     if (!self.matchmakingClient) {
+        self.quitReason = QuitReasonConnectionDropped;
         self.matchmakingClient = [MatchmakingClient new];
         self.matchmakingClient.delegate = self;
         [self.matchmakingClient startSearchingForServersWithSessionID:SESSION_ID];
@@ -62,6 +64,8 @@
 
 - (IBAction)exitAction:(id)sender
 {
+    self.quitReason = QuitReasonUserQuit;
+    [self.matchmakingClient disconnectFromServer];
     [self.delegate joinViewControllerDidCancel:self];
 }
 
@@ -115,6 +119,19 @@
 - (void)matchmakingClient:(MatchmakingClient *)client serverBecameUnavailable:(NSString *)peerID
 {
     [self.tableView reloadData];
+}
+
+- (void)matchmakingClient:(MatchmakingClient *)client didDisconnectFromServer:(NSString *)peerID
+{
+    self.matchmakingClient.delegate = nil;
+    self.matchmakingClient = nil;
+    [self.tableView reloadData];
+    [self.delegate joinViewController:self didDisconnectWithReason:self.quitReason];
+}
+
+- (void)matchmakingClientNoNetwork:(MatchmakingClient *)client
+{
+    self.quitReason = QuitReasonNoNetwork;
 }
 
 @end

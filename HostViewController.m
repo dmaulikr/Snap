@@ -3,7 +3,7 @@
 //  Snap
 //
 //  Created by Scott Gardner on 12/17/12.
-//  Copyright (c) 2012 Hollance. All rights reserved.
+//  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
 #import "HostViewController.h"
@@ -19,6 +19,7 @@
 @property (nonatomic, weak) IBOutlet UIButton *startButton;
 
 @property (nonatomic, strong) MatchmakingServer *matchmakingServer;
+@property (nonatomic, assign) QuitReason quitReason;
 @end
 
 @implementation HostViewController
@@ -65,6 +66,8 @@
 
 - (IBAction)exitAction:(id)sender
 {
+    self.quitReason = QuitReasonUserQuit;
+    [self.matchmakingServer endSession];
     [self.delegate hostViewControllerDidCancel:self];
 }
 
@@ -112,6 +115,19 @@
 - (void)matchmakingServer:(MatchmakingServer *)server clientDidDisconnect:(NSString *)peerID
 {
     [self.tableView reloadData];
+}
+
+- (void)matchmakingServerNoNetwork:(MatchmakingServer *)server
+{
+    self.quitReason = QuitReasonNoNetwork;
+}
+
+- (void)matchmakingServerSessionDidEnd:(MatchmakingServer *)server
+{
+    self.matchmakingServer.delegate = nil;
+    self.matchmakingServer = nil;
+    [self.tableView reloadData];
+    [self.delegate hostViewController:self didEndSessionWithReason:self.quitReason];
 }
 
 @end

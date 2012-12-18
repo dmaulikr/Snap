@@ -50,6 +50,16 @@
 
 #pragma mark - Private methods
 
+- (void)showDisconnectedAlert
+{
+    [[[UIAlertView alloc] initWithTitle:@"Disconnected" message:@"You were disconnected from the game." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
+- (void)showNoNetworkAlert
+{
+    [[[UIAlertView alloc] initWithTitle:@"No Network" message:@"To use multiplayer, please enable Bluetooth or Wi-Fi in your device's Settings." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
 #pragma mark - Animating the intro
 
 - (void)prepareForIntroAnimation
@@ -174,6 +184,13 @@
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
+- (void)hostViewController:(HostViewController *)controller didEndSessionWithReason:(QuitReason)reason
+{
+    if (reason == QuitReasonNoNetwork) {
+        [self showNoNetworkAlert];
+    }
+}
+
 #pragma mark - JoinViewControllerDelegate
 
 - (void)joinViewControllerDidCancel:(JoinViewController *)controller
@@ -181,5 +198,15 @@
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
+- (void)joinViewController:(JoinViewController *)controller didDisconnectWithReason:(QuitReason)reason
+{
+    if (reason == QuitReasonNoNetwork) {
+        [self showNoNetworkAlert];
+    } else if (reason == QuitReasonConnectionDropped) {
+        [self dismissViewControllerAnimated:NO completion:^{
+            [self showDisconnectedAlert];
+        }];
+    }
+}
 
 @end

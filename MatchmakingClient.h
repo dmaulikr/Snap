@@ -3,7 +3,7 @@
 //  Snap
 //
 //  Created by Scott Gardner on 12/17/12.
-//  Copyright (c) 2012 Hollance. All rights reserved.
+//  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -13,6 +13,8 @@
 @protocol MatchmakingClientDelegate <NSObject>
 - (void)matchmakingClient:(MatchmakingClient *)client serverBecameAvailable:(NSString *)peerID;
 - (void)matchmakingClient:(MatchmakingClient *)client serverBecameUnavailable:(NSString *)peerID;
+- (void)matchmakingClient:(MatchmakingClient *)client didDisconnectFromServer:(NSString *)peerID;
+- (void)matchmakingClientNoNetwork:(MatchmakingClient *)client;
 @end
 
 @interface MatchmakingClient : NSObject
@@ -23,5 +25,6 @@
 
 - (void)startSearchingForServersWithSessionID:(NSString *)sessionID;
 - (void)connectToServerWithPeerID:(NSString *)peerID;
+- (void)disconnectFromServer;
 
 @end

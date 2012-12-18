@@ -3,7 +3,7 @@
 //  Snap
 //
 //  Created by Scott Gardner on 12/17/12.
-//  Copyright (c) 2012 Hollance. All rights reserved.
+//  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
 #import "MatchmakingServer.h"
@@ -42,7 +42,23 @@ typedef enum {
     }
 }
 
+#pragma mark - Private methods
+
+- (void)endSession
+{
+    NSAssert(self.serverState != ServerStateIdle, @"Wrong state");
+    self.serverState = ServerStateIdle;
+    [self.session disconnectFromAllPeers];
+    self.session.available = NO;
+    self.session.delegate = nil;
+    self.session = nil;
+    self.connectedClients = nil;
+    [self.delegate matchmakingServerSessionDidEnd:self];
+}
+
 #pragma mark - GKSessionDelegate
+
+// GKSession becomes invalid if server is suspended, e.g., enters background
 
 - (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state
 {
@@ -57,7 +73,6 @@ typedef enum {
         case GKPeerStateUnavailable:
             break;
             
-            // New client has connected to server
         case GKPeerStateConnected:
             if (self.serverState == ServerStateAcceptingConnections) {
                 if (![self.connectedClients containsObject:peerID]) {
@@ -67,7 +82,6 @@ typedef enum {
             }
             break;
             
-            // Client has disconnected from server
         case GKPeerStateDisconnected:
             if (self.serverState != ServerStateIdle) {
                 if ([self.connectedClients containsObject:peerID]) {
@@ -113,6 +127,13 @@ typedef enum {
     #ifdef DEBUG
     NSLog(@"MatchmakingServer: session failed %@", error);
     #endif
+    
+    if ([[error domain] isEqualToString:GKSessionErrorDomain]) {
+        if ([error code] == GKSessionCannotEnableError) {
+            [self.delegate matchmakingServerNoNetwork:self];
+            [self endSession];
+        }
+    }
 }
 
 @end

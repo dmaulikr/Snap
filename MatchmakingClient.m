@@ -3,7 +3,7 @@
 //  Snap
 //
 //  Created by Scott Gardner on 12/17/12.
-//  Copyright (c) 2012 Hollance. All rights reserved.
+//  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
 #import "MatchmakingClient.h"
@@ -52,6 +52,28 @@ typedef enum {
     [self.session connectToPeer:peerID withTimeout:self.session.disconnectTimeout];
 }
 
+- (void)dealloc
+{
+    #ifdef DEBUG
+    NSLog(@"dealloc %@", self);
+    #endif
+}
+
+#pragma mark - Private methods
+
+- (void)disconnectFromServer
+{
+    NSAssert(self.clientState != ClientStateIdle, @"Wrong state");
+    self.clientState = ClientStateIdle;
+    [self.session disconnectFromAllPeers];
+    self.session.available = NO;
+    self.session.delegate = nil;
+    self.session = nil;
+    self.availableServers = nil;
+    [self.delegate matchmakingClient:self didDisconnectFromServer:self.serverPeerID];
+    self.serverPeerID = nil;
+}
+
 #pragma mark - GKSessionDelegate
 
 - (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state
@@ -61,7 +83,6 @@ typedef enum {
     #endif
     
     switch (state) {
-            // Client discovered a new server is available
         case GKPeerStateAvailable:
             if (self.clientState == ClientStateSearchingForServers) {
                 if (![self.availableServers containsObject:peerID]) {
@@ -71,20 +92,30 @@ typedef enum {
             }
             break;
             
-            // Client discovered a previously known server is no longer available
         case GKPeerStateUnavailable:
             if (self.clientState == ClientStateSearchingForServers) {
                 if ([self.availableServers containsObject:peerID]) {
                     [self.availableServers removeObject:peerID];
                     [self.delegate matchmakingClient:self serverBecameUnavailable:peerID];
                 }
+                
+                // Is this the server we're currently trying to connect with?
+                if (self.clientState == ClientStateConnecting && [peerID isEqualToString:self.serverPeerID]) {
+                    [self disconnectFromServer];
+                }
             }
             break;
             
         case GKPeerStateConnected:
+            if (self.clientState == ClientStateConnecting) {
+                self.clientState = ClientStateConnected;
+            }
             break;
             
         case GKPeerStateDisconnected:
+            if (self.clientState == ClientStateConnected) {
+                [self disconnectFromServer];
+            }
             break;
             
         case GKPeerStateConnecting:
@@ -102,11 +133,14 @@ typedef enum {
     #endif
 }
 
+// Also called when server explicity calls denyConnectionFromPeer, e.g., server already has max client connections
 - (void)session:(GKSession *)session connectionWithPeerFailed:(NSString *)peerID withError:(NSError *)error
 {
     #ifdef DEBUG
     NSLog(@"MatchmakingClient: connection with peer %@ failed %@", peerID, error);
     #endif
+    
+    [self disconnectFromServer];
 }
 
 - (void)session:(GKSession *)session didFailWithError:(NSError *)error
@@ -114,6 +148,13 @@ typedef enum {
     #ifdef DEBUG
     NSLog(@"MatchmakingClient: session failed %@", error);
     #endif
+    
+    if ([[error domain] isEqualToString:GKSessionErrorDomain]) {
+        if ([error code] == GKSessionCannotEnableError) {
+            [self.delegate matchmakingClientNoNetwork:self];
+            [self disconnectFromServer];
+        }
+    }
 }
 
 @end

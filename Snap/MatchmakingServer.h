@@ -3,7 +3,7 @@
 //  Snap
 //
 //  Created by Scott Gardner on 12/17/12.
-//  Copyright (c) 2012 Hollance. All rights reserved.
+//  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -13,6 +13,8 @@
 @protocol MatchmakingServerDelegate <NSObject>
 - (void)matchmakingServer:(MatchmakingServer *)server clientDidConnect:(NSString *)peerID;
 - (void)matchmakingServer:(MatchmakingServer *)server clientDidDisconnect:(NSString *)peerID;
+- (void)matchmakingServerNoNetwork:(MatchmakingServer *)server;
+- (void)matchmakingServerSessionDidEnd:(MatchmakingServer *)server;
 @end
 
 @interface MatchmakingServer : NSObject
@@ -23,5 +25,6 @@
 @property (nonatomic, strong, readonly) GKSession *session;
 
 - (void)startAcceptingConnectionsForSessionID:(NSString *)sessionID;
+- (void)endSession;
 
 @end
