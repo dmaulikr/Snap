@@ -8,8 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+@class MatchmakingClient;
+
+@protocol MatchmakingClientDelegate <NSObject>
+- (void)matchmakingClient:(MatchmakingClient *)client serverBecameAvailable:(NSString *)peerID;
+- (void)matchmakingClient:(MatchmakingClient *)client serverBecameUnavailable:(NSString *)peerID;
+@end
+
 @interface MatchmakingClient : NSObject
 
+@property (nonatomic, weak) id <MatchmakingClientDelegate> delegate;
 @property (nonatomic, strong, readonly) NSMutableArray *availableServers;
 @property (nonatomic, strong, readonly) GKSession *session;
 

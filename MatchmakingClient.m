@@ -27,30 +27,60 @@
 
 - (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state
 {
-#ifdef DEBUG
+    #ifdef DEBUG
     NSLog(@"MatchmakingClient: peer %@ changed state %d", peerID, state);
-#endif
+    #endif
+    
+    switch (state) {
+            // Client discovered a new server is available
+        case GKPeerStateAvailable:
+            if (![self.availableServers containsObject:peerID]) {
+                [self.availableServers addObject:peerID];
+                [self.delegate matchmakingClient:self serverBecameAvailable:peerID];
+            }
+            break;
+            
+            // Client discovered a previously known server is no longer available
+        case GKPeerStateUnavailable:
+            if ([self.availableServers containsObject:peerID]) {
+                [self.availableServers removeObject:peerID];
+                [self.delegate matchmakingClient:self serverBecameUnavailable:peerID];
+            }
+            break;
+            
+        case GKPeerStateConnected:
+            break;
+            
+        case GKPeerStateDisconnected:
+            break;
+            
+        case GKPeerStateConnecting:
+            break;
+                        
+        default:
+            break;
+    }
 }
 
 - (void)session:(GKSession *)session didReceiveConnectionRequestFromPeer:(NSString *)peerID
 {
-#ifdef DEBUG
+    #ifdef DEBUG
     NSLog(@"MatchmakingClient: connection request from peer %@", peerID);
-#endif
+    #endif
 }
 
 - (void)session:(GKSession *)session connectionWithPeerFailed:(NSString *)peerID withError:(NSError *)error
 {
-#ifdef DEBUG
+    #ifdef DEBUG
     NSLog(@"MatchmakingClient: connection with peer %@ failed %@", peerID, error);
-#endif
+    #endif
 }
 
 - (void)session:(GKSession *)session didFailWithError:(NSError *)error
 {
-#ifdef DEBUG
+    #ifdef DEBUG
     NSLog(@"MatchmakingClient: session failed %@", error);
-#endif
+    #endif
 }
 
 @end

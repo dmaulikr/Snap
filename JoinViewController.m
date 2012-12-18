@@ -8,8 +8,9 @@
 
 #import "JoinViewController.h"
 #import "MatchmakingClient.h"
+#import "PeerCell.h"
 
-@interface JoinViewController ()
+@interface JoinViewController () <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, MatchmakingClientDelegate>
 @property (nonatomic, weak) IBOutlet UILabel *headingLabel;
 @property (nonatomic, weak) IBOutlet UILabel *nameLabel;
 @property (nonatomic, weak) IBOutlet UITextField *nameTextField;
@@ -34,6 +35,7 @@
     self.statusLabel.font = [UIFont rw_snapFontWithSize:16.0f];
     self.waitLabel.font = [UIFont rw_snapFontWithSize:18.0f];
     [self rw_addHideKeyboardGestureRecognizerWithTarget:self.nameTextField];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"PeerCell"];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -42,6 +44,7 @@
     
     if (!self.matchmakingClient) {
         self.matchmakingClient = [MatchmakingClient new];
+        self.matchmakingClient.delegate = self;
         [self.matchmakingClient startSearchingForServersWithSessionID:SESSION_ID];
         self.nameTextField.placeholder = self.matchmakingClient.session.displayName;
         [self.tableView reloadData];
@@ -74,12 +77,31 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 0;
+    if (self.matchmakingClient) {
+        return [self.matchmakingClient.availableServers count];
+    } else {
+        return 0;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return nil;
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PeerCell"];
+    NSString *peerID = self.matchmakingClient.availableServers[indexPath.row];
+    cell.textLabel.text = [self.matchmakingClient.session displayNameForPeer:peerID];
+    return cell;
+}
+
+#pragma mark - MatchmakingClientDelegate
+
+- (void)matchmakingClient:(MatchmakingClient *)client serverBecameAvailable:(NSString *)peerID
+{
+    [self.tableView reloadData];
+}
+
+- (void)matchmakingClient:(MatchmakingClient *)client serverBecameUnavailable:(NSString *)peerID
+{
+    [self.tableView reloadData];
 }
 
 @end
