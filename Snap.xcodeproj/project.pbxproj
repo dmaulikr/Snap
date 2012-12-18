@@ -62,6 +62,9 @@
 		D2B4FA71167FDB5A00B7BE0D /* JoinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA70167FDB5A00B7BE0D /* JoinViewController.m */; };
 		D2B4FA75167FDB9A00B7BE0D /* JoinViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B4FA73167FDB9A00B7BE0D /* JoinViewController.xib */; };
 		D2B4FA78167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA77167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m */; };
+		D2B4FA8A167FE70300B7BE0D /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2B4FA89167FE70300B7BE0D /* GameKit.framework */; };
+		D2B4FA8E167FE7C800B7BE0D /* MatchmakingServer.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA8D167FE7C800B7BE0D /* MatchmakingServer.m */; };
+		D2B4FA92167FEFC700B7BE0D /* MatchmakingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA91167FEFC700B7BE0D /* MatchmakingClient.m */; };
 		D2F1757C167F5B76008C6A9B /* Action_Man.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2F1757B167F5B76008C6A9B /* Action_Man.ttf */; };
 		D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */; };
 /* End PBXBuildFile section */
@@ -131,6 +134,11 @@
 		D2B4FA74167FDB9A00B7BE0D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Snap/en.lproj/JoinViewController.xib; sourceTree = "<group>"; };
 		D2B4FA76167FDDCB00B7BE0D /* UIViewController+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SnapAdditions.h"; sourceTree = "<group>"; };
 		D2B4FA77167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SnapAdditions.m"; sourceTree = "<group>"; };
+		D2B4FA89167FE70300B7BE0D /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		D2B4FA8C167FE7C800B7BE0D /* MatchmakingServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchmakingServer.h; path = Snap/MatchmakingServer.h; sourceTree = "<group>"; };
+		D2B4FA8D167FE7C800B7BE0D /* MatchmakingServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatchmakingServer.m; path = Snap/MatchmakingServer.m; sourceTree = "<group>"; };
+		D2B4FA90167FEFC700B7BE0D /* MatchmakingClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchmakingClient.h; sourceTree = "<group>"; };
+		D2B4FA91167FEFC700B7BE0D /* MatchmakingClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchmakingClient.m; sourceTree = "<group>"; };
 		D2F1757B167F5B76008C6A9B /* Action_Man.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Action_Man.ttf; sourceTree = SOURCE_ROOT; };
 		D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SnapAdditions.h"; sourceTree = "<group>"; };
 		D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SnapAdditions.m"; sourceTree = "<group>"; };
@@ -141,6 +149,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D2B4FA8A167FE70300B7BE0D /* GameKit.framework in Frameworks */,
 				7B739AC614EC9DFE00A07C50 /* AVFoundation.framework in Frameworks */,
 				7B67D9DB14C9C6AD00254619 /* UIKit.framework in Frameworks */,
 				7B67D9DD14C9C6AD00254619 /* Foundation.framework in Frameworks */,
@@ -222,6 +231,7 @@
 		7B67D9D914C9C6AD00254619 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D2B4FA89167FE70300B7BE0D /* GameKit.framework */,
 				7B739AC514EC9DFE00A07C50 /* AVFoundation.framework */,
 				7B67D9DE14C9C6AD00254619 /* CoreGraphics.framework */,
 				7B67D9DC14C9C6AD00254619 /* Foundation.framework */,
@@ -240,6 +250,7 @@
 				7B2B314014CC726A0002F476 /* Images */,
 				7B67D9E314C9C6AD00254619 /* InfoPlist.strings */,
 				7B67D9E614C9C6AD00254619 /* main.m */,
+				D2B4FA8F167FE7DA00B7BE0D /* Networking */,
 				7B67D9E214C9C6AD00254619 /* Snap-Info.plist */,
 				7B67D9E814C9C6AD00254619 /* Snap-Prefix.pch */,
 			);
@@ -275,6 +286,18 @@
 			children = (
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		D2B4FA8F167FE7DA00B7BE0D /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				D2B4FA90167FEFC700B7BE0D /* MatchmakingClient.h */,
+				D2B4FA91167FEFC700B7BE0D /* MatchmakingClient.m */,
+				D2B4FA8C167FE7C800B7BE0D /* MatchmakingServer.h */,
+				D2B4FA8D167FE7C800B7BE0D /* MatchmakingServer.m */,
+			);
+			name = Networking;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		D2F17581167F5BDD008C6A9B /* Categories */ = {
@@ -404,6 +427,8 @@
 				D2B4FA62167FC31C00B7BE0D /* HostViewController.m in Sources */,
 				D2B4FA71167FDB5A00B7BE0D /* JoinViewController.m in Sources */,
 				D2B4FA78167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m in Sources */,
+				D2B4FA8E167FE7C800B7BE0D /* MatchmakingServer.m in Sources */,
+				D2B4FA92167FEFC700B7BE0D /* MatchmakingClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
