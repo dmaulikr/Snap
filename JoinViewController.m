@@ -7,6 +7,7 @@
 //
 
 #import "JoinViewController.h"
+#import "MatchmakingClient.h"
 
 @interface JoinViewController ()
 @property (nonatomic, weak) IBOutlet UILabel *headingLabel;
@@ -18,6 +19,8 @@
 
 // strong because top-level additional view in xib; not necessary for first view because it is retained via self.view
 @property (nonatomic, strong) IBOutlet UIView *waitView;
+
+@property (nonatomic, strong) MatchmakingClient *matchmakingClient;
 @end
 
 @implementation JoinViewController
@@ -31,6 +34,18 @@
     self.statusLabel.font = [UIFont rw_snapFontWithSize:16.0f];
     self.waitLabel.font = [UIFont rw_snapFontWithSize:18.0f];
     [self rw_addHideKeyboardGestureRecognizerWithTarget:self.nameTextField];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (!self.matchmakingClient) {
+        self.matchmakingClient = [MatchmakingClient new];
+        [self.matchmakingClient startSearchingForServersWithSessionID:SESSION_ID];
+        self.nameTextField.placeholder = self.matchmakingClient.session.displayName;
+        [self.tableView reloadData];
+    }
 }
 
 - (void)dealloc
