@@ -121,6 +121,13 @@
     [self.tableView reloadData];
 }
 
+- (void)matchmakingClient:(MatchmakingClient *)client didConnectToServer:(NSString *)peerID
+{
+    NSString *name = [self.nameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([name length] == 0) name = self.matchmakingClient.session.displayName;    
+    [self.delegate joinViewController:self startGameWithSession:self.matchmakingClient.session playerName:name server:peerID];
+}
+
 - (void)matchmakingClient:(MatchmakingClient *)client didDisconnectFromServer:(NSString *)peerID
 {
     self.matchmakingClient.delegate = nil;

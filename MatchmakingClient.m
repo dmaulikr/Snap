@@ -109,6 +109,7 @@ typedef enum {
         case GKPeerStateConnected:
             if (self.clientState == ClientStateConnecting) {
                 self.clientState = ClientStateConnected;
+                [self.delegate matchmakingClient:self didConnectToServer:peerID];
             }
             break;
             

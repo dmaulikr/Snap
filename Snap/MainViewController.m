@@ -2,8 +2,10 @@
 #import "MainViewController.h"
 #import "HostViewController.h"
 #import "JoinViewController.h"
+#import "GameViewController.h"
+#import "Game.h"
 
-@interface MainViewController () <HostViewControllerDelegate, JoinViewControllerDelegate>
+@interface MainViewController () <HostViewControllerDelegate, JoinViewControllerDelegate, GameViewControllerDelegate>
 @property (nonatomic, weak) IBOutlet UIImageView *sImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *nImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *aImageView;
@@ -17,9 +19,19 @@
 @property (nonatomic, weak) IBOutlet UIButton *singlePlayerGameButton;
 
 @property (nonatomic, assign) BOOL buttonsEnabled;
+@property (nonatomic, assign) BOOL performAnimations;
 @end
 
 @implementation MainViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        _performAnimations = YES;
+    }
+    
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -32,13 +44,13 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self prepareForIntroAnimation];
+    if (self.performAnimations) [self prepareForIntroAnimation];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self performIntroAnimation];
+    if (self.performAnimations) [self performIntroAnimation];
 }
 
 - (void)dealloc
@@ -58,6 +70,19 @@
 - (void)showNoNetworkAlert
 {
     [[[UIAlertView alloc] initWithTitle:@"No Network" message:@"To use multiplayer, please enable Bluetooth or Wi-Fi in your device's Settings." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
+- (void)startGameWithBlock:(void (^)(Game *))block
+{
+    GameViewController *controller = [[GameViewController alloc] initWithNibName:@"GameViewController" bundle:nil];
+    controller.delegate = self;
+    
+    [self presentViewController:controller animated:NO completion:^{
+        Game *game = [Game new];
+        controller.game = game;
+        game.delegate = controller;
+        block(game);
+    }];
 }
 
 #pragma mark - Animating the intro
@@ -184,6 +209,19 @@
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
+- (void)hostViewController:(HostViewController *)controller startGameWithSession:(GKSession *)session playerName:(NSString *)name clients:(NSArray *)clients
+{
+    self.performAnimations = NO;
+    
+    [self dismissViewControllerAnimated:NO completion:^{
+        self.performAnimations = YES;
+        
+        [self startGameWithBlock:^(Game *game) {
+            [game startServerGameWithSession:session playerName:name clients:clients];
+        }];
+    }];
+}
+
 - (void)hostViewController:(HostViewController *)controller didEndSessionWithReason:(QuitReason)reason
 {
     if (reason == QuitReasonNoNetwork) {
@@ -198,6 +236,19 @@
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
+- (void)joinViewController:(JoinViewController *)controller startGameWithSession:(GKSession *)session playerName:(NSString *)name server:(NSString *)peerID
+{
+    self.performAnimations = NO;
+    
+    [self dismissViewControllerAnimated:NO completion:^{
+        self.performAnimations = YES;
+        
+        [self startGameWithBlock:^(Game *game) {
+            [game startClientGameWithSession:session playerName:name server:peerID];
+        }];
+    }];
+}
+
 - (void)joinViewController:(JoinViewController *)controller didDisconnectWithReason:(QuitReason)reason
 {
     if (reason == QuitReasonNoNetwork) {
@@ -207,6 +258,17 @@
             [self showDisconnectedAlert];
         }];
     }
+}
+
+#pragma mark - GameViewControllerDelegate
+
+- (void)gameViewController:(GameViewController *)controller didQuitWithReason:(QuitReason)reason
+{
+    [self dismissViewControllerAnimated:NO completion:^{
+        if (reason == QuitReasonConnectionDropped) {
+            [self showDisconnectedAlert];
+        }
+    }];
 }
 
 @end

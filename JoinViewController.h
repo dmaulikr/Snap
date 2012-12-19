@@ -12,6 +12,7 @@
 
 @protocol JoinViewControllerDelegate <NSObject>
 - (void)joinViewControllerDidCancel:(JoinViewController *)controller;
+- (void)joinViewController:(JoinViewController *)controller startGameWithSession:(GKSession *)session playerName:(NSString *)name server:(NSString *)peerID;
 - (void)joinViewController:(JoinViewController *)controller didDisconnectWithReason:(QuitReason)reason;
 @end
 

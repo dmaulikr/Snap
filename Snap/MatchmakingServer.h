@@ -25,6 +25,7 @@
 @property (nonatomic, strong, readonly) GKSession *session;
 
 - (void)startAcceptingConnectionsForSessionID:(NSString *)sessionID;
+- (void)stopAcceptingConnections;
 - (void)endSession;
 
 @end

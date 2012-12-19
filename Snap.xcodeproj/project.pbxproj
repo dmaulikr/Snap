@@ -55,8 +55,12 @@
 		7BF49EAD14EBBB7300AB8472 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EA614EBBB7300AB8472 /* iTunesArtwork */; };
 		7BF49EB014EBBC7400AB8472 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EAE14EBBC7400AB8472 /* Default.png */; };
 		7BF49EB114EBBC7400AB8472 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EAF14EBBC7400AB8472 /* Default@2x.png */; };
-		D23B0786167F540700A05362 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D23B0785167F540700A05362 /* Default-568h@2x.png */; };
+		D27D09A71680D316007617C8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D27D09A61680D316007617C8 /* Default-568h@2x.png */; };
+		D27D09AC1680E85D007617C8 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D27D09AB1680E85D007617C8 /* GameViewController.m */; };
+		D27D09AF1680E879007617C8 /* GameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D27D09AD1680E879007617C8 /* GameViewController.xib */; };
+		D27D09B21680EB00007617C8 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = D27D09B11680EB00007617C8 /* Game.m */; };
 		D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */; };
+		D29D9EF41681A89600549513 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9EF31681A89600549513 /* Player.m */; };
 		D2A6E1D116806EB20045DED1 /* PeerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A6E1D016806EB20045DED1 /* PeerCell.m */; };
 		D2B4FA62167FC31C00B7BE0D /* HostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA61167FC31C00B7BE0D /* HostViewController.m */; };
 		D2B4FA66167FC36700B7BE0D /* HostViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B4FA64167FC36700B7BE0D /* HostViewController.xib */; };
@@ -124,9 +128,16 @@
 		7BF49EA614EBBB7300AB8472 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		7BF49EAE14EBBC7400AB8472 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		7BF49EAF14EBBC7400AB8472 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		D23B0785167F540700A05362 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		D27D09A61680D316007617C8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		D27D09AA1680E85D007617C8 /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
+		D27D09AB1680E85D007617C8 /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
+		D27D09AE1680E879007617C8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Snap/en.lproj/GameViewController.xib; sourceTree = "<group>"; };
+		D27D09B01680EB00007617C8 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
+		D27D09B11680EB00007617C8 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
 		D28BF844167F98BA00988577 /* UIButton+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SnapAdditions.h"; sourceTree = "<group>"; };
 		D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SnapAdditions.m"; sourceTree = "<group>"; };
+		D29D9EF21681A89600549513 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		D29D9EF31681A89600549513 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		D2A6E1CF16806EB20045DED1 /* PeerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeerCell.h; sourceTree = "<group>"; };
 		D2A6E1D016806EB20045DED1 /* PeerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeerCell.m; sourceTree = "<group>"; };
 		D2B4FA60167FC31C00B7BE0D /* HostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HostViewController.h; sourceTree = "<group>"; };
@@ -174,7 +185,7 @@
 				7B011471151B2FBA00A0616D /* CellBackground@2x.png */,
 				7B011474151B3AF600A0616D /* CellBackgroundSelected.png */,
 				7B011475151B3AF600A0616D /* CellBackgroundSelected@2x.png */,
-				D23B0785167F540700A05362 /* Default-568h@2x.png */,
+				D27D09A61680D316007617C8 /* Default-568h@2x.png */,
 				7BF49EAE14EBBC7400AB8472 /* Default.png */,
 				7BF49EAF14EBBC7400AB8472 /* Default@2x.png */,
 				7BF49E6114E9096E00AB8472 /* ExitButton.png */,
@@ -264,6 +275,8 @@
 		D23B0788167F54CF00A05362 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D27D09AA1680E85D007617C8 /* GameViewController.h */,
+				D27D09AB1680E85D007617C8 /* GameViewController.m */,
 				D2B4FA60167FC31C00B7BE0D /* HostViewController.h */,
 				D2B4FA61167FC31C00B7BE0D /* HostViewController.m */,
 				D2B4FA6F167FDB5A00B7BE0D /* JoinViewController.h */,
@@ -277,6 +290,7 @@
 		D23B0789167F54D600A05362 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D27D09AD1680E879007617C8 /* GameViewController.xib */,
 				D2B4FA64167FC36700B7BE0D /* HostViewController.xib */,
 				D2B4FA73167FDB9A00B7BE0D /* JoinViewController.xib */,
 				7BF49E3314E1FD3200AB8472 /* MainViewController.xib */,
@@ -289,6 +303,10 @@
 		D23B078A167F54DB00A05362 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				D27D09B01680EB00007617C8 /* Game.h */,
+				D27D09B11680EB00007617C8 /* Game.m */,
+				D29D9EF21681A89600549513 /* Player.h */,
+				D29D9EF31681A89600549513 /* Player.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -410,10 +428,11 @@
 				7B011477151B3AF600A0616D /* CellBackgroundSelected@2x.png in Resources */,
 				7B01147A151B432C00A0616D /* Icon-72@2x.png in Resources */,
 				7B01147B151B432C00A0616D /* Icon-Small-50@2x.png in Resources */,
-				D23B0786167F540700A05362 /* Default-568h@2x.png in Resources */,
 				D2F1757C167F5B76008C6A9B /* Action_Man.ttf in Resources */,
 				D2B4FA66167FC36700B7BE0D /* HostViewController.xib in Resources */,
 				D2B4FA75167FDB9A00B7BE0D /* JoinViewController.xib in Resources */,
+				D27D09A71680D316007617C8 /* Default-568h@2x.png in Resources */,
+				D27D09AF1680E879007617C8 /* GameViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,6 +454,9 @@
 				D2B4FA8E167FE7C800B7BE0D /* MatchmakingServer.m in Sources */,
 				D2B4FA92167FEFC700B7BE0D /* MatchmakingClient.m in Sources */,
 				D2A6E1D116806EB20045DED1 /* PeerCell.m in Sources */,
+				D27D09AC1680E85D007617C8 /* GameViewController.m in Sources */,
+				D27D09B21680EB00007617C8 /* Game.m in Sources */,
+				D29D9EF41681A89600549513 /* Player.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +478,14 @@
 			);
 			name = MainViewController.xib;
 			path = Snap;
+			sourceTree = "<group>";
+		};
+		D27D09AD1680E879007617C8 /* GameViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D27D09AE1680E879007617C8 /* en */,
+			);
+			name = GameViewController.xib;
 			sourceTree = "<group>";
 		};
 		D2B4FA64167FC36700B7BE0D /* HostViewController.xib */ = {

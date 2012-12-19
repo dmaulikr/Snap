@@ -42,6 +42,13 @@ typedef enum {
     }
 }
 
+- (void)stopAcceptingConnections
+{
+    NSAssert(self.serverState == ServerStateAcceptingConnections, @"Wrong state");
+    self.serverState = ServerStateIgnoringNewConnections;
+    self.session.available = NO;
+}
+
 #pragma mark - Private methods
 
 - (void)endSession
