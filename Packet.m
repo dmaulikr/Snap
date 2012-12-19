@@ -7,6 +7,7 @@
 //
 
 #import "Packet.h"
+#import "PacketSignInResponse.h"
 #import "NSData+SnapAdditions.h"
 
 const size_t PACKET_HEADER_SIZE = 10;
@@ -20,6 +21,7 @@ const size_t PACKET_HEADER_SIZE = 10;
 
 + (id)packetWithData:(NSData *)data
 {
+    // [data length] returns the number of bytes
     if ([data length] < PACKET_HEADER_SIZE) {
         NSLog(@"Error: packet too small");
         return nil;
@@ -30,9 +32,25 @@ const size_t PACKET_HEADER_SIZE = 10;
         return nil;
     }
     
-    int packetNumber = [data rw_int32AtOffset:4]; // Intentionally not used yet
+//    int packetNumber = [data rw_int32AtOffset:4]; // For future use
     PacketType packetType = [data rw_int16AtOffset:8];
-    return [Packet packetWithType:packetType];
+    Packet *packet;
+    
+    switch (packetType) {
+        case PacketTypeSignInRequest:
+            packet = [Packet packetWithType:packetType];
+            break;
+            
+        case PacketTypeSignInResponse:
+            packet = [PacketSignInResponse packetWithData:data];
+            break;
+            
+        default:
+            NSLog(@"Error: packet has invalid type");
+            break;
+    }
+    
+    return packet;
 }
 
 - (id)initWithType:(PacketType)packetType

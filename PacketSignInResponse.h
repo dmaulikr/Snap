@@ -8,6 +8,8 @@
 
 #import "Packet.h"
 
+const size_t PACKET_HEADER_SIZE;
+
 @interface PacketSignInResponse : Packet
 
 @property (nonatomic, copy) NSString *playerName;

@@ -111,6 +111,10 @@ typedef enum {
 
 #pragma mark - Private methods
 
+/*
+ Apple recommends GameKit transmissions be 1,000 bytes or less (which can then be transmitted in a single TCP/IP packet). Larger message need to be split up and then recombined by the receiver, which GameKit will handle but it is slower.
+ */
+
 - (void)sendPacketToAllClients:(Packet *)packet
 {
     GKSendDataMode dataMode = GKSendDataReliable; // Continuously sent until received or connection times out
@@ -136,6 +140,7 @@ typedef enum {
 - (void)receiveData:(NSData *)data fromPeer:(NSString *)peerID inSession:(GKSession *)session context:(void *)context
 {
     #ifdef DEBUG
+    // [data length] returns the number of bytes
     NSLog(@"Game: receive data from peer %@, data:%@, length: %d", peerID, data, [data length]);
     #endif
     
@@ -146,7 +151,13 @@ typedef enum {
         return;
     }
     
-    [self clientReceivedPacket:packet];
+    Player *player = [self playerWithPeerID:peerID];
+    
+    if (self.isServer) {
+        [self serverReceivedPacket:packet fromPlayer:player];
+    } else {
+        [self clientReceivedPacket:packet];
+    }
 }
 
 - (void)clientReceivedPacket:(Packet *)packet
@@ -164,6 +175,27 @@ typedef enum {
             NSLog(@"Client received unexpected packet: %@", packet);
             break;
     }
+}
+
+- (void)serverReceivedPacket:(Packet *)packet fromPlayer:(Player *)player
+{
+    switch (packet.packetType) {
+        case PacketTypeSignInResponse:
+            if (self.state == GameStateWaitForSignIn) {
+                player.name = ((PacketSignInResponse *)packet).playerName;
+                NSLog(@"Server received sign-in response from client '%@'", player.name);
+            }
+            break;
+            
+        default:
+            NSLog(@"Server received unexpected packet: %@", packet);
+            break;
+    }
+}
+
+- (Player *)playerWithPeerID:(NSString *)peerID
+{
+    return self.players[peerID];
 }
 
 #pragma mark - GKSessionDelegate

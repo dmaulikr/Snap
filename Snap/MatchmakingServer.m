@@ -113,9 +113,9 @@ typedef enum {
         NSError *error;
         
         if ([session acceptConnectionFromPeer:peerID error:&error]) {
-            NSLog(@"MatchmakingServer: Connection accepted from peer %@", peerID);
+            NSLog(@"MatchmakingServer: connection accepted from peer %@", peerID);
         } else {
-            NSLog(@"MatchmakingServer: Error accepting connection from peer %@, %@", peerID, error);
+            NSLog(@"MatchmakingServer: error accepting connection from peer %@, %@", peerID, error);
         }
     } else {
         [session denyConnectionFromPeer:peerID];
