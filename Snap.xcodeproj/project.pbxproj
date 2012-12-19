@@ -61,6 +61,8 @@
 		D27D09B21680EB00007617C8 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = D27D09B11680EB00007617C8 /* Game.m */; };
 		D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */; };
 		D29D9EF41681A89600549513 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9EF31681A89600549513 /* Player.m */; };
+		D29D9F001681B59C00549513 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9EFF1681B59C00549513 /* Packet.m */; };
+		D29D9F041681B85400549513 /* NSData+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9F031681B85400549513 /* NSData+SnapAdditions.m */; };
 		D2A6E1D116806EB20045DED1 /* PeerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A6E1D016806EB20045DED1 /* PeerCell.m */; };
 		D2B4FA62167FC31C00B7BE0D /* HostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA61167FC31C00B7BE0D /* HostViewController.m */; };
 		D2B4FA66167FC36700B7BE0D /* HostViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B4FA64167FC36700B7BE0D /* HostViewController.xib */; };
@@ -138,6 +140,10 @@
 		D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SnapAdditions.m"; sourceTree = "<group>"; };
 		D29D9EF21681A89600549513 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		D29D9EF31681A89600549513 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
+		D29D9EFE1681B59C00549513 /* Packet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packet.h; sourceTree = "<group>"; };
+		D29D9EFF1681B59C00549513 /* Packet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packet.m; sourceTree = "<group>"; };
+		D29D9F021681B85400549513 /* NSData+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SnapAdditions.h"; sourceTree = "<group>"; };
+		D29D9F031681B85400549513 /* NSData+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SnapAdditions.m"; sourceTree = "<group>"; };
 		D2A6E1CF16806EB20045DED1 /* PeerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeerCell.h; sourceTree = "<group>"; };
 		D2A6E1D016806EB20045DED1 /* PeerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeerCell.m; sourceTree = "<group>"; };
 		D2B4FA60167FC31C00B7BE0D /* HostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HostViewController.h; sourceTree = "<group>"; };
@@ -318,6 +324,8 @@
 				D2B4FA91167FEFC700B7BE0D /* MatchmakingClient.m */,
 				D2B4FA8C167FE7C800B7BE0D /* MatchmakingServer.h */,
 				D2B4FA8D167FE7C800B7BE0D /* MatchmakingServer.m */,
+				D29D9EFE1681B59C00549513 /* Packet.h */,
+				D29D9EFF1681B59C00549513 /* Packet.m */,
 			);
 			name = Networking;
 			sourceTree = "<group>";
@@ -325,10 +333,12 @@
 		D2F17581167F5BDD008C6A9B /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */,
-				D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */,
+				D29D9F021681B85400549513 /* NSData+SnapAdditions.h */,
+				D29D9F031681B85400549513 /* NSData+SnapAdditions.m */,
 				D28BF844167F98BA00988577 /* UIButton+SnapAdditions.h */,
 				D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */,
+				D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */,
+				D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */,
 				D2B4FA76167FDDCB00B7BE0D /* UIViewController+SnapAdditions.h */,
 				D2B4FA77167FDDCB00B7BE0D /* UIViewController+SnapAdditions.m */,
 			);
@@ -457,6 +467,8 @@
 				D27D09AC1680E85D007617C8 /* GameViewController.m in Sources */,
 				D27D09B21680EB00007617C8 /* Game.m in Sources */,
 				D29D9EF41681A89600549513 /* Player.m in Sources */,
+				D29D9F001681B59C00549513 /* Packet.m in Sources */,
+				D29D9F041681B85400549513 /* NSData+SnapAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

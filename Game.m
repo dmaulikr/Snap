@@ -8,6 +8,7 @@
 
 #import "Game.h"
 #import "Player.h"
+#import "Packet.h"
 
 typedef enum {
     GameStateWaitForSignIn,
@@ -80,6 +81,9 @@ typedef enum {
                 break;
         }
     }];
+    
+    Packet *packet = [Packet packetWithType:PacketTypeSignInRequest];
+    [self sendPacketToAllClients:packet];
 }
 
 - (void)startClientGameWithSession:(GKSession *)session playerName:(NSString *)name server:(NSString *)peerID
@@ -105,6 +109,17 @@ typedef enum {
 }
 
 #pragma mark - Private methods
+
+- (void)sendPacketToAllClients:(Packet *)packet
+{
+    GKSendDataMode dataMode = GKSendDataReliable; // Continuously sent until received or connection times out
+    NSData *data = [packet data];
+    NSError *error;
+    
+    if (![self.session sendDataToAllPeers:data withDataMode:dataMode error:&error]) {
+        NSLog(@"Error sending data to clients: %@", error);
+    }
+}
 
 - (void)receiveData:(NSData *)data fromPeer:(NSString *)peerID inSession:(GKSession *)session context:(void *)context
 {
