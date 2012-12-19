@@ -9,6 +9,7 @@
 #import "Game.h"
 #import "Player.h"
 #import "Packet.h"
+#import "PacketSignInResponse.h"
 
 typedef enum {
     GameStateWaitForSignIn,
@@ -121,11 +122,48 @@ typedef enum {
     }
 }
 
+- (void)sendPacketToServer:(Packet *)packet
+{
+    GKSendDataMode dataMode = GKSendDataReliable;
+    NSData *data = [packet data];
+    NSError *error;
+    
+    if (![self.session sendData:data toPeers:@[self.serverPeerID] withDataMode:dataMode error:&error]) {
+        NSLog(@"Error sending data to server: %@", error);
+    }
+}
+
 - (void)receiveData:(NSData *)data fromPeer:(NSString *)peerID inSession:(GKSession *)session context:(void *)context
 {
     #ifdef DEBUG
     NSLog(@"Game: receive data from peer %@, data:%@, length: %d", peerID, data, [data length]);
     #endif
+    
+    Packet *packet = [Packet packetWithData:data];
+    
+    if (!packet) {
+        NSLog(@"Invalid packet: %@", data);
+        return;
+    }
+    
+    [self clientReceivedPacket:packet];
+}
+
+- (void)clientReceivedPacket:(Packet *)packet
+{
+    switch (packet.packetType) {
+        case PacketTypeSignInRequest:
+            if (self.state == GameStateWaitForSignIn) {
+                self.state = GameStateWaitingForReady;
+                Packet *packet = [PacketSignInResponse packetWithPlayerName:self.localPlayerName];
+                [self sendPacketToServer:packet];
+            }
+            break;
+            
+        default:
+            NSLog(@"Client received unexpected packet: %@", packet);
+            break;
+    }
 }
 
 #pragma mark - GKSessionDelegate

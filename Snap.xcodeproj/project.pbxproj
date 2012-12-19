@@ -63,6 +63,7 @@
 		D29D9EF41681A89600549513 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9EF31681A89600549513 /* Player.m */; };
 		D29D9F001681B59C00549513 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9EFF1681B59C00549513 /* Packet.m */; };
 		D29D9F041681B85400549513 /* NSData+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9F031681B85400549513 /* NSData+SnapAdditions.m */; };
+		D29D9F071681CEEF00549513 /* PacketSignInResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9F061681CEEF00549513 /* PacketSignInResponse.m */; };
 		D2A6E1D116806EB20045DED1 /* PeerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A6E1D016806EB20045DED1 /* PeerCell.m */; };
 		D2B4FA62167FC31C00B7BE0D /* HostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B4FA61167FC31C00B7BE0D /* HostViewController.m */; };
 		D2B4FA66167FC36700B7BE0D /* HostViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D2B4FA64167FC36700B7BE0D /* HostViewController.xib */; };
@@ -144,6 +145,8 @@
 		D29D9EFF1681B59C00549513 /* Packet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packet.m; sourceTree = "<group>"; };
 		D29D9F021681B85400549513 /* NSData+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SnapAdditions.h"; sourceTree = "<group>"; };
 		D29D9F031681B85400549513 /* NSData+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SnapAdditions.m"; sourceTree = "<group>"; };
+		D29D9F051681CEEF00549513 /* PacketSignInResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PacketSignInResponse.h; sourceTree = "<group>"; };
+		D29D9F061681CEEF00549513 /* PacketSignInResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PacketSignInResponse.m; sourceTree = "<group>"; };
 		D2A6E1CF16806EB20045DED1 /* PeerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeerCell.h; sourceTree = "<group>"; };
 		D2A6E1D016806EB20045DED1 /* PeerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeerCell.m; sourceTree = "<group>"; };
 		D2B4FA60167FC31C00B7BE0D /* HostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HostViewController.h; sourceTree = "<group>"; };
@@ -326,6 +329,8 @@
 				D2B4FA8D167FE7C800B7BE0D /* MatchmakingServer.m */,
 				D29D9EFE1681B59C00549513 /* Packet.h */,
 				D29D9EFF1681B59C00549513 /* Packet.m */,
+				D29D9F051681CEEF00549513 /* PacketSignInResponse.h */,
+				D29D9F061681CEEF00549513 /* PacketSignInResponse.m */,
 			);
 			name = Networking;
 			sourceTree = "<group>";
@@ -469,6 +474,7 @@
 				D29D9EF41681A89600549513 /* Player.m in Sources */,
 				D29D9F001681B59C00549513 /* Packet.m in Sources */,
 				D29D9F041681B85400549513 /* NSData+SnapAdditions.m in Sources */,
+				D29D9F071681CEEF00549513 /* PacketSignInResponse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
