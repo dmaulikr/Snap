@@ -9,7 +9,9 @@
 	#import <UIKit/UIKit.h>
 	#import <Foundation/Foundation.h>
     #import <GameKit/GameKit.h>
-    
+    #import <QuartzCore/QuartzCore.h>
+
+    #import "NSData+SnapAdditions.h"
     #import "UIButton+SnapAdditions.h"
     #import "UIFont+SnapAdditions.h"
     #import "UIViewController+SnapAdditions.h"

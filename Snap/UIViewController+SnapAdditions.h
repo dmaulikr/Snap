@@ -6,8 +6,6 @@
 //  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 @interface UIViewController (SnapAdditions)
 
 - (void)rw_addHideKeyboardGestureRecognizerWithTarget:(UITextField *)textField;

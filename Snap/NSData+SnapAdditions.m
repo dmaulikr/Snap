@@ -3,7 +3,7 @@
 //  Snap
 //
 //  Created by Scott Gardner on 12/19/12.
-//  Copyright (c) 2012 Hollance. All rights reserved.
+//  Copyright (c) 2012 inyago LLC. All rights reserved.
 //
 
 #import "NSData+SnapAdditions.h"
@@ -33,7 +33,7 @@
 - (NSString *)rw_stringAtOffset:(size_t)offset bytesRead:(size_t *)amount
 {
     const char *bytes = (const char *)[self bytes];
-    NSString *string = [NSString stringWithUTF8String:bytes + offset];
+    NSString *string = @(bytes + offset);
     *amount = strlen(bytes + offset) + 1;
     return string;
 }
@@ -76,6 +76,11 @@
 
 - (void)rw_appendString:(NSString *)string
 {
+    if (!string) {
+        // TODO: Find out why string is sometimes nil!
+        string = @"Player";
+    }
+    
     const char *cString = [string UTF8String];
     [self appendBytes:cString length:strlen(cString) + 1]; // +1 for UTF8String's nill-termination byte
 }

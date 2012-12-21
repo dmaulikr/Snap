@@ -6,8 +6,6 @@
 //  Copyright (c) 2012 Scott Gardner. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
 @class MatchmakingServer;
 
 @protocol MatchmakingServerDelegate <NSObject>
