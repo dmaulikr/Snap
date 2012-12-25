@@ -7,19 +7,15 @@
 //
 
 #import "Game.h"
+#import "Deck.h"
+#import "Card.h"
+#import "Player.h"
+#import "Stack.h"
 #import "Packet.h"
 #import "PacketSignInResponse.h"
 #import "PacketServerReady.h"
 #import "PacketOtherClientQuit.h"
-
-typedef enum {
-    GameStateWaitingForSignIn,
-    GameStateWaitingForReady,
-    GameStateDealing,
-    GameStatePlaying,
-    GameStateGameOver,
-    GameStateQuitting
-} GameState;
+#import "PacketDealCards.h"
 
 @interface Game () <GKSessionDelegate>
 @property (nonatomic, assign) GameState state;
@@ -27,6 +23,9 @@ typedef enum {
 @property (nonatomic, copy) NSString *serverPeerID;
 @property (nonatomic, copy) NSString *localPlayerName;
 @property (nonatomic, strong) NSMutableDictionary *players;
+@property (nonatomic, assign) PlayerPosition startingPlayerPosition;
+@property (nonatomic, assign) PlayerPosition activePlayerPosition;
+
 @end
 
 @implementation Game
@@ -223,6 +222,12 @@ typedef enum {
             }
             break;
             
+        case PacketTypeDealCards:
+            if (self.state == GameStateDealing) {
+                [self handleDealCardsPacket:(PacketDealCards *)packet];
+            }
+            break;
+            
         case PacketTypeOtherClientQuit:
             if (self.state != GameStateQuitting) {
                 PacketOtherClientQuit *quitPacket = ((PacketOtherClientQuit *)packet);
@@ -261,6 +266,12 @@ typedef enum {
             if (self.state == GameStateWaitingForReady && [self receivedResponsesFromAllPlayers]) {
             	NSLog(@"Beginning game");
                 [self beginGame];
+            }
+            break;
+            
+        case PacketTypeClientDealtCards:
+            if (self.state == GameStateDealing && [self receivedResponsesFromAllPlayers]) {
+                self.state = GameStatePlaying;
             }
             break;
             
@@ -309,6 +320,53 @@ typedef enum {
 {
     self.state = GameStateDealing;
     [self.delegate gameDidBegin:self];
+    
+    if (self.isServer) {
+        [self pickRandomStartingPlayer];
+        [self dealCards];
+    }
+}
+
+- (void)pickRandomStartingPlayer
+{
+    do {
+        self.startingPlayerPosition = arc4random() % 4;
+    } while (![self playerAtPosition:self.startingPlayerPosition]);
+    
+    self.activePlayerPosition = self.startingPlayerPosition;
+}
+
+- (void)dealCards
+{
+    NSAssert(self.isServer, @"Must be server");
+    NSAssert(self.state == GameStateDealing, @"Wrong state");
+    Deck *deck = [Deck new];
+    [deck shuffle];
+    
+    while ([deck.cards count]) {
+        for (PlayerPosition p = self.startingPlayerPosition; p <  self.startingPlayerPosition + 4; p++) {
+            Player *player = [self playerAtPosition:(p % 4)];
+            
+            if (player && [deck.cards count]) {
+                Card *card = [deck draw];
+                [player.closedCards addCardToTop:card];
+            }
+        }
+    }
+    
+    Player *startingPlayer = [self playerAtPosition:self.activePlayerPosition];
+    
+    NSMutableDictionary *playerCards = [NSMutableDictionary dictionaryWithCapacity:4];
+    
+    [self.players enumerateKeysAndObjectsUsingBlock:^(id key, Player *player, BOOL *stop) {
+        NSArray *cards = player.closedCards.cards;
+        playerCards[player.peerID] = cards;
+    }];
+    
+    PacketDealCards *packet = [PacketDealCards packetWithCards:playerCards startingWithPlayerPeerID:startingPlayer.peerID];
+    [self sendPacketToAllClients:packet];
+    
+    [self.delegate gameShouldDealCards:self startingWithPlayer:startingPlayer];
 }
 
 - (void)clientDidDisconnect:(NSString *)peerID
@@ -330,6 +388,21 @@ typedef enum {
             }
         }
     }
+}
+
+- (void)handleDealCardsPacket:(PacketDealCards *)packet
+{
+    [packet.cards enumerateKeysAndObjectsUsingBlock:^(NSString *peerID, NSArray *cards, BOOL *stop) {
+        Player *player = [self playerWithPeerID:peerID];
+        [player.closedCards addCards:cards];
+    }];
+    
+    Player *startingPlayer = [self playerWithPeerID:packet.startingPeerID];
+    self.activePlayerPosition = startingPlayer.position;
+    Packet *responsePacket = [Packet packetWithType:PacketTypeClientDealtCards];
+    [self sendPacketToServer:responsePacket];
+    self.state = GameStatePlaying;
+    [self.delegate gameShouldDealCards:self startingWithPlayer:startingPlayer];
 }
 
 #pragma mark - GKSessionDelegate

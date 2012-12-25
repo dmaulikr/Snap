@@ -8,6 +8,7 @@
 #ifdef __OBJC__
 	#import <UIKit/UIKit.h>
 	#import <Foundation/Foundation.h>
+    #import <AVFoundation/AVFoundation.h>
     #import <GameKit/GameKit.h>
     #import <QuartzCore/QuartzCore.h>
 
@@ -18,9 +19,78 @@
 #endif
 
 #define SESSION_ID @"Snap!"
+#define PACKET_HEADER_SIZE 10
+#define CardAce 1
+#define CardJack 11
+#define CardQueen 12
+#define CardKing 13
+
+// Return a random number between 0.0 and 1.0 (inclusive)
+#define RANDOM_FLOAT() ((float)arc4random()/0xFFFFFFFFu)
+
+// Return a random number between 0 and n (inclusive)
+#define RANDOM_INT(n) (arc4random() % (n + 1))
+
+typedef enum {
+    SuitClubs,
+    SuitDiamonds,
+    SuitHearts,
+    SuitSpades
+} Suit;
+
+typedef enum {
+    GameStateWaitingForSignIn,
+    GameStateWaitingForReady,
+    GameStateDealing,
+    GameStatePlaying,
+    GameStateGameOver,
+    GameStateQuitting
+} GameState;
+
+typedef enum {
+    ClientStateIdle,
+    ClientStateSearchingForServers,
+    ClientStateConnecting,
+    ClientStateConnected
+} ClientState;
+
+typedef enum {
+    ServerStateIdle,
+    ServerStateAcceptingConnections,
+    ServerStateIgnoringNewConnections
+} ServerState;
+
+typedef enum {
+    PlayerPositionBottom, // The user
+    PlayerPositionLeft,
+    PlayerPositionTop,
+    PlayerPositionRight
+} PlayerPosition;
+
 typedef enum {
     QuitReasonNoNetwork,            // No Wi-Fi or Bluetooth
     QuitReasonConnectionDropped,    // Communication failure with server
     QuitReasonUserQuit,             // User terminated the connection
     QuitReasonServerQuit            // Server intentionally quit the game
 } QuitReason;
+
+typedef enum {
+    PacketTypeSignInRequest = 0x64, // Server to client
+    PacketTypeSignInResponse,       // Client to server
+    
+    PacketTypeServerReady,          // Server to client
+    PacketTypeClientReady,          // Client to server
+    
+    PacketTypeDealCards,           // Server to client
+    PacketTypeClientDealtCards,     // Client to server
+    
+    PacketTypeActivatePlayer,       // Server to client
+    PacketTypeClientTurnedCard,     // Client to server
+    
+    PacketTypePlayerShouldSnap,     // Client to server
+    PacketTypePlayerCalledSnap,     // Server to client
+    
+    PacketTypeOtherClientQuit,      // Server to client
+    PacketTypeServerQuit,           // Server to client
+    PacketTypeClientQuit            // Client to server
+} PacketType;

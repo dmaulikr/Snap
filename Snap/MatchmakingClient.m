@@ -8,13 +8,6 @@
 
 #import "MatchmakingClient.h"
 
-typedef enum {
-    ClientStateIdle,
-    ClientStateSearchingForServers,
-    ClientStateConnecting,
-    ClientStateConnected
-} ClientState;
-
 @interface MatchmakingClient () <GKSessionDelegate>
 @property (nonatomic, assign) ClientState clientState;
 @property (nonatomic, copy) NSString *serverPeerID;

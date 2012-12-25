@@ -15,36 +15,15 @@
  'SNAP' is a four-character code, aka "fourcc"
  */
 
-typedef enum {
-    PacketTypeSignInRequest = 0x64, // Server to client
-    PacketTypeSignInResponse,       // Client to server
-    
-    PacketTypeServerReady,          // Server to client
-    PacketTypeClientReady,          // Client to server
-    
-    PacketTypeDealCards,           // Server to client
-    PacketTypeClientDealtCards,     // Client to server
-    
-    PacketTypeActivatePlayer,       // Server to client
-    PacketTypeClientTurnedCard,     // Client to server
-    
-    PacketTypePlayerShouldSnap,     // Client to server
-    PacketTypePlayerCalledSnap,     // Server to client
-    
-    PacketTypeOtherClientQuit,      // Server to client
-    PacketTypeServerQuit,           // Server to client
-    PacketTypeClientQuit            // Client to server
-} PacketType;
-
-const size_t PACKET_HEADER_SIZE;
-
 @interface Packet : NSObject
 
 @property (nonatomic, assign) PacketType packetType;
 
 + (id)packetWithType:(PacketType)packetType;
 + (id)packetWithData:(NSData *)data;
++ (NSDictionary *)cardsFromData:(NSData *)data atOffset:(size_t)offset;
 - (id)initWithType:(PacketType)packetType;
 - (NSData *)data;
+- (void)addCards:(NSDictionary *)cards toPayload:(NSMutableData *)data;
 
 @end

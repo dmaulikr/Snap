@@ -10,8 +10,8 @@
 #import "PacketSignInResponse.h"
 #import "PacketServerReady.h"
 #import "PacketOtherClientQuit.h"
-
-const size_t PACKET_HEADER_SIZE = 10;
+#import "PacketDealCards.h"
+#import "Card.h"
 
 @implementation Packet
 
@@ -40,6 +40,7 @@ const size_t PACKET_HEADER_SIZE = 10;
     switch (packetType) {
         case PacketTypeSignInRequest:
         case PacketTypeClientReady:
+        case PacketTypeClientDealtCards:
         case PacketTypeServerQuit:
         case PacketTypeClientQuit:
             packet = [Packet packetWithType:packetType];
@@ -51,6 +52,10 @@ const size_t PACKET_HEADER_SIZE = 10;
             
         case PacketTypeServerReady:
             packet = [PacketServerReady packetWithData:data];
+            break;
+            
+        case PacketTypeDealCards:
+            packet = [PacketDealCards packetWithData:data];
             break;
             
         case PacketTypeOtherClientQuit:
@@ -65,6 +70,33 @@ const size_t PACKET_HEADER_SIZE = 10;
     return packet;
 }
 
++ (NSDictionary *)cardsFromData:(NSData *)data atOffset:(size_t)offset
+{
+    size_t count;
+    NSMutableDictionary *cards = [NSMutableDictionary dictionaryWithCapacity:4];
+    
+    while (offset < [data length]) {
+        NSString *peerID = [data rw_stringAtOffset:offset bytesRead:&count];
+        offset += count;
+        int numberOfCards = [data rw_int8AtOffset:offset];
+        offset++;
+        NSMutableArray *array = [NSMutableArray arrayWithCapacity:numberOfCards];
+        
+        for (int i = 0; i < numberOfCards; i++) {
+            int suit = [data rw_int8AtOffset:offset];
+            offset++;
+            int value = [data rw_int8AtOffset:offset];
+            offset++;
+            Card *card = [[Card alloc] initWithSuit:suit value:value];
+            array[i] = card;
+        }
+        
+        cards[peerID] = array;
+    }
+    
+    return cards;
+}
+
 - (id)initWithType:(PacketType)packetType
 {
     if (self = [super init]) {
@@ -72,6 +104,11 @@ const size_t PACKET_HEADER_SIZE = 10;
     }
     
     return self;
+}
+
+- (NSString *)description
+{
+	return [NSString stringWithFormat:@"%@, type = %d", [super description], self.packetType];
 }
 
 - (NSData *)data
@@ -84,12 +121,22 @@ const size_t PACKET_HEADER_SIZE = 10;
     return data;
 }
 
-#pragma mark - Private methods
-
-- (NSString *)description
+- (void)addCards:(NSDictionary *)cards toPayload:(NSMutableData *)data
 {
-	return [NSString stringWithFormat:@"%@, type = %d", [super description], self.packetType];
+    [cards enumerateKeysAndObjectsUsingBlock:^(id key, NSArray *array, BOOL *stop) {
+        int arrayCount = [array count];
+        [data rw_appendString:key];
+        [data rw_appendInt8:arrayCount];
+        
+        for (int i = 0; i < arrayCount; i++) {
+            Card *card = array[i];
+            [data rw_appendInt8:card.suit];
+            [data rw_appendInt8:card.value];
+        }
+    }];
 }
+
+#pragma mark - Private methods
 
 - (void)addPayloadToData:(NSMutableData *)data
 {

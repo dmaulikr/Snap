@@ -7,8 +7,20 @@
 //
 
 #import "Player.h"
+#import "Card.h"
+#import "Stack.h"
 
 @implementation Player
+
+- (id)init
+{
+    if (self = [super init]) {
+        _closedCards = [Stack new];
+        _openCards = [Stack new];
+    }
+    
+    return self;
+}
 
 - (NSString *)description
 {

@@ -16,6 +16,7 @@
 - (void)gameWaitingForClientsReady:(Game *)game;
 - (void)gameDidBegin:(Game *)game;
 - (void)game:(Game *)game playerDidDisconnect:(Player *)player;
+- (void)gameShouldDealCards:(Game *)game startingWithPlayer:(Player *)player;
 @end
 
 @interface Game : NSObject

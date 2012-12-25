@@ -8,6 +8,10 @@
 
 #import "GameViewController.h"
 #import "Game.h"
+#import "Player.h"
+#import "Card.h"
+#import "CardView.h"
+#import "Stack.h"
 
 @interface GameViewController () <UIAlertViewDelegate>
 @property (nonatomic, weak) IBOutlet UILabel *centerLabel;
@@ -41,6 +45,8 @@
 @property (nonatomic, weak) IBOutlet UIImageView *snapIndicatorRightImageView;
 
 @property (nonatomic, strong) UIAlertView *alertView;
+
+@property (nonatomic, strong) AVAudioPlayer *dealingCardsSound;
 @end
 
 @implementation GameViewController
@@ -58,6 +64,7 @@
 	[self hidePlayerLabels];
 	[self hideActivePlayerIndicator];
 	[self hideSnapIndicators];
+    [self loadSounds];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -71,6 +78,9 @@
     #ifdef DEBUG
     NSLog(@"dealloc %@", self);
     #endif
+    
+    [self.dealingCardsSound stop];
+    [[ AVAudioSession sharedInstance] setActive:NO error:nil];
 }
 
 #pragma mark - Private methods
@@ -135,6 +145,20 @@
 		self.playerNameRightLabel.hidden = NO;
 		self.playerWinsRightLabel.hidden = NO;
 	}
+}
+
+- (void)loadSounds
+{
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    [audioSession setCategory:AVAudioSessionCategoryAmbient error:nil];
+    [audioSession setActive:YES error:nil];
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"Dealing" withExtension:@"caf"];
+    self.dealingCardsSound = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+    
+    // Setting a negative number cause loop to repeat indefinitely until stop is called
+    self.dealingCardsSound.numberOfLoops = -1;
+    
+    [self.dealingCardsSound prepareToPlay];
 }
 
 - (void)updateWinsLabels
@@ -317,6 +341,9 @@
 {
     if (buttonIndex != alertView.cancelButtonIndex) {
         [self.game quitGameWithReason:QuitReasonUserQuit];
+        
+        // To cancel performSelector:afterDealing... if the user exits during dealing
+        [NSObject cancelPreviousPerformRequestsWithTarget:self];
     }
 }
 
@@ -378,6 +405,39 @@
         default:
             break;
 	}
+}
+
+- (void)gameShouldDealCards:(Game *)game startingWithPlayer:(Player *)startingPlayer
+{
+    self.centerLabel.text = @"Dealing...";
+    self.snapButton.hidden = YES;
+    self.nextRoundButton.hidden = YES;
+    NSTimeInterval delay = 1.0f;
+    [self.dealingCardsSound performSelector:@selector(play) withObject:nil afterDelay:delay];
+    
+    for (int i = 0; i < 26; i++) {
+        for (PlayerPosition p = startingPlayer.position; p < startingPlayer.position + 4; p++) {
+            Player *player = [self.game playerAtPosition:p % 4];
+            
+            if (player && i < [startingPlayer.closedCards.cards count]) {
+                CardView *cardView = [[CardView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CardWidth, CardHeight)];
+                cardView.card = player.closedCards.cards[i];
+                [self.cardContainerView addSubview:cardView];
+                [cardView animateDealingToPlayer:player withDelay:delay];
+                
+                // Deal cards sequentially, not all at once
+                delay += 0.1f;
+            }
+        }
+    }
+    
+    [self performSelector:@selector(afterDealing) withObject:nil afterDelay:delay];
+}
+
+- (void)afterDealing
+{
+    [self.dealingCardsSound stop];
+    self.snapButton.hidden = NO;
 }
 
 @end

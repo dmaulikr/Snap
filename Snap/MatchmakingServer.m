@@ -8,12 +8,6 @@
 
 #import "MatchmakingServer.h"
 
-typedef enum {
-    ServerStateIdle,
-    ServerStateAcceptingConnections,
-    ServerStateIgnoringNewConnections
-} ServerState;
-
 @interface MatchmakingServer () <GKSessionDelegate>
 @property (nonatomic, strong, readwrite) NSMutableArray *connectedClients;
 @property (nonatomic, strong, readwrite) GKSession *session;
