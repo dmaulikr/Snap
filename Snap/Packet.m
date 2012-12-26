@@ -42,6 +42,7 @@
         case PacketTypeSignInRequest:
         case PacketTypeClientReady:
         case PacketTypeClientDealtCards:
+        case PacketTypeClientTurnedCard:
         case PacketTypeServerQuit:
         case PacketTypeClientQuit:
             packet = [Packet packetWithType:packetType];

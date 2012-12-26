@@ -26,10 +26,14 @@
 @property (nonatomic, strong) NSMutableDictionary *players;
 @property (nonatomic, assign) PlayerPosition startingPlayerPosition;
 @property (nonatomic, assign) PlayerPosition activePlayerPosition;
-
+@property (nonatomic, assign) BOOL firstTime;
+@property (nonatomic, assign) BOOL busyDealing;
+@property (nonatomic, assign) BOOL hasTurnedCard;
 @end
 
 @implementation Game
+
+// TODO:1 Currently the game isn’t going to be 100% fair. The user who flips a card sees that card before any of the other clients, and therefore has an advantage (it takes a few milliseconds to send out the network packets). We could compensate for this by delaying the turn-over animation for the currently active player. One way to do this is to measure the latency between the devices (the network "ping"). The server also has an advantage because it always receives the packets before the other clients do.
 
 - (id)init
 {
@@ -102,24 +106,11 @@
     [self.delegate gameWaitingForServerReady:self];
 }
 
-- (void)quitGameWithReason:(QuitReason)reason
+- (void)beginRound
 {
-    self.state = GameStateQuitting;
-    
-    if (reason == QuitReasonUserQuit) {
-        if (self.isServer) {
-            Packet *packet = [Packet packetWithType:PacketTypeServerQuit];
-            [self sendPacketToAllClients:packet];
-        } else {
-            Packet *packet = [Packet packetWithType:PacketTypeClientQuit];
-            [self sendPacketToServer:packet];
-        }
-    }
-    
-    [self.session disconnectFromAllPeers];
-    self.session.delegate = nil;
-    self.session = nil;
-    [self.delegate game:self didQuitWithReason:reason];
+    self.busyDealing = NO;
+    self.hasTurnedCard = NO;
+    [self activatePlayerAtPosition:self.activePlayerPosition];
 }
 
 - (Player *)playerAtPosition:(PlayerPosition)position
@@ -141,20 +132,154 @@
 	return player;
 }
 
-- (void)beginRound
+- (void)quitGameWithReason:(QuitReason)reason
 {
-    [self activatePlayerAtPosition:self.activePlayerPosition];
+    // Cancel scheduled pending calls (e.g., activating the next player after the delay, but that player quits or gets disconnected before the scheduled method is fired)
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    
+    self.state = GameStateQuitting;
+    
+    if (reason == QuitReasonUserQuit) {
+        if (self.isServer) {
+            Packet *packet = [Packet packetWithType:PacketTypeServerQuit];
+            [self sendPacketToAllClients:packet];
+        } else {
+            Packet *packet = [Packet packetWithType:PacketTypeClientQuit];
+            [self sendPacketToServer:packet];
+        }
+    }
+    
+    [self.session disconnectFromAllPeers];
+    self.session.delegate = nil;
+    self.session = nil;
+    [self.delegate game:self didQuitWithReason:reason];
 }
 
 #pragma mark - Private methods
+
+- (void)beginGame
+{
+    self.state = GameStateDealing;
+    self.firstTime = YES;
+    self.busyDealing = YES;
+    [self.delegate gameDidBegin:self];
+    
+    if (self.isServer) {
+        [self pickRandomStartingPlayer];
+        [self dealCards];
+    }
+}
+
+- (void)pickRandomStartingPlayer
+{
+    do {
+        self.startingPlayerPosition = arc4random() % 4;
+    } while (![self playerAtPosition:self.startingPlayerPosition]);
+    
+    self.activePlayerPosition = self.startingPlayerPosition;
+    
+    // Uncomment to force server to be active player at start
+    self.activePlayerPosition = PlayerPositionBottom;
+}
+
+- (void)dealCards
+{
+    NSAssert(self.isServer, @"Must be server");
+    NSAssert(self.state == GameStateDealing, @"Wrong state");
+    Deck *deck = [Deck new];
+    [deck shuffle];
+    
+    while ([deck.cards count]) {
+        for (PlayerPosition p = self.startingPlayerPosition; p <  self.startingPlayerPosition + 4; p++) {
+            Player *player = [self playerAtPosition:(p % 4)];
+            
+            if (player && [deck.cards count]) {
+                Card *card = [deck draw];
+                [player.closedCards addCardToTop:card];
+            }
+        }
+    }
+    
+    Player *startingPlayer = [self activePlayer];
+    
+    NSMutableDictionary *playerCards = [NSMutableDictionary dictionaryWithCapacity:4];
+    
+    [self.players enumerateKeysAndObjectsUsingBlock:^(id key, Player *player, BOOL *stop) {
+        NSArray *cards = player.closedCards.cards;
+        playerCards[player.peerID] = cards;
+    }];
+    
+    PacketDealCards *packet = [PacketDealCards packetWithCards:playerCards startingWithPlayerPeerID:startingPlayer.peerID];
+    [self sendPacketToAllClients:packet];
+    
+    [self.delegate gameShouldDealCards:self startingWithPlayer:startingPlayer];
+}
+
+- (void)turnCardForPlayer:(Player *)player
+{
+    NSAssert([player.closedCards.cards count], @"Player has no more cards");
+    
+    // Prevents player being able to quickly tap the closed card stack to turn over multiple cards during one turn
+    self.hasTurnedCard = YES;
+    
+    Card *card = [player turnOverTopCard];
+    [self.delegate game:self player:player turnedOverCard:card];
+}
+
+- (void)turnCardForActivePlayer
+{
+    [self turnCardForPlayer:[self activePlayer]];
+    if (self.isServer) [self performSelector:@selector(activateNextPlayer) withObject:nil afterDelay:0.5f];
+}
+
+- (void)turnCardForPlayerAtBottom
+{
+    if (self.state == GameStatePlaying
+        && self.activePlayerPosition == PlayerPositionBottom
+        
+        // Prevents active player from being able to turn over card before dealing (animation) is finished
+        && !self.busyDealing
+        
+        && !self.hasTurnedCard
+        && [[self activePlayer].closedCards.cards count]) {
+        [self turnCardForActivePlayer];
+        
+        if (!self.isServer) {
+            Packet *packet = [Packet packetWithType:PacketTypeClientTurnedCard];
+            [self sendPacketToServer:packet];
+        }
+    }
+}
 
 - (Player *)activePlayer
 {
     return [self playerAtPosition:self.activePlayerPosition];
 }
 
+- (void)activateNextPlayer
+{
+    NSAssert(self.isServer, @"Must be server");
+    
+    while (true) {
+        self.activePlayerPosition++;
+        
+        if (self.activePlayerPosition > PlayerPositionRight) self.activePlayerPosition = PlayerPositionBottom;
+        Player *nextPlayer = [self activePlayer];
+        
+        if (nextPlayer) {
+            // This will also send a PacketActivatePlayer packet to all clients
+            [self activatePlayerAtPosition:self.activePlayerPosition];
+            
+            return;
+        }
+    }
+}
+
 - (void)activatePlayerAtPosition:(PlayerPosition)position
 {
+    // Newly-activated player will not have turned over a card yet
+    self.hasTurnedCard = NO;
+    
     if (self.isServer) {
         NSString *peerID = [self activePlayer].peerID;
         Packet *packet = [PacketActivatePlayer packetWithPeerID:peerID];
@@ -164,12 +289,20 @@
     [self.delegate game:self didActivatePlayer:[self activePlayer]];
 }
 
-/*
- Apple recommends GameKit transmissions be 1,000 bytes or less (which can then be transmitted in a single TCP/IP packet). Larger message need to be split up and then recombined by the receiver, which GameKit will handle but it is slower.
- */
+- (void)activatePlayerWithPeerID:(NSString *)peerID
+{
+    NSAssert(!self.isServer, @"Must be client");
+    Player *player = [self playerWithPeerID:peerID];
+    self.activePlayerPosition = player.position;
+    [self activatePlayerAtPosition:self.activePlayerPosition];
+}
 
 - (void)sendPacketToAllClients:(Packet *)packet
 {
+    /*
+     Apple recommends GameKit transmissions be 1,000 bytes or less (which can then be transmitted in a single TCP/IP packet). Larger message need to be split up and then recombined by the receiver, which GameKit will handle but it is slower.
+     */
+    
     // Intially set all players' receivedResponse to NO except the server
     [self.players enumerateKeysAndObjectsUsingBlock:^(id key, Player *player, BOOL *stop) {
         player.receivedResponse = [self.session.peerID isEqualToString:player.peerID];
@@ -303,6 +436,12 @@
             }
             break;
             
+        case PacketTypeClientTurnedCard:
+            if (self.state == GameStatePlaying && player == [self activePlayer]) {
+                [self turnCardForActivePlayer];
+            }
+            break;
+            
         case PacketTypeClientQuit:
             [self clientDidDisconnect:player.peerID];
             break;
@@ -344,75 +483,6 @@
     }];
 }
 
-- (void)beginGame
-{
-    self.state = GameStateDealing;
-    [self.delegate gameDidBegin:self];
-    
-    if (self.isServer) {
-        [self pickRandomStartingPlayer];
-        [self dealCards];
-    }
-}
-
-- (void)pickRandomStartingPlayer
-{
-    do {
-        self.startingPlayerPosition = arc4random() % 4;
-    } while (![self playerAtPosition:self.startingPlayerPosition]);
-    
-    self.activePlayerPosition = self.startingPlayerPosition;
-}
-
-- (void)dealCards
-{
-    NSAssert(self.isServer, @"Must be server");
-    NSAssert(self.state == GameStateDealing, @"Wrong state");
-    Deck *deck = [Deck new];
-    [deck shuffle];
-    
-    while ([deck.cards count]) {
-        for (PlayerPosition p = self.startingPlayerPosition; p <  self.startingPlayerPosition + 4; p++) {
-            Player *player = [self playerAtPosition:(p % 4)];
-            
-            if (player && [deck.cards count]) {
-                Card *card = [deck draw];
-                [player.closedCards addCardToTop:card];
-            }
-        }
-    }
-    
-    Player *startingPlayer = [self activePlayer];
-    
-    NSMutableDictionary *playerCards = [NSMutableDictionary dictionaryWithCapacity:4];
-    
-    [self.players enumerateKeysAndObjectsUsingBlock:^(id key, Player *player, BOOL *stop) {
-        NSArray *cards = player.closedCards.cards;
-        playerCards[player.peerID] = cards;
-    }];
-    
-    PacketDealCards *packet = [PacketDealCards packetWithCards:playerCards startingWithPlayerPeerID:startingPlayer.peerID];
-    [self sendPacketToAllClients:packet];
-    
-    [self.delegate gameShouldDealCards:self startingWithPlayer:startingPlayer];
-}
-
-- (void)turnCardForPlayerAtBottom
-{
-    if (self.state == GameStatePlaying && self.activePlayerPosition == PlayerPositionBottom && [[self activePlayer].closedCards.cards count]) {
-        [self turnCardForPlayer:[self activePlayer]];
-    }
-}
-
-#pragma mark - Private methods
-
-- (void)turnCardForPlayer:(Player *)player
-{
-    NSAssert([player.closedCards.cards count], @"Player has no more cards");
-    Card *card = [player turnOverTopCard];
-    [self.delegate game:self player:player turnedOverCard:card];
-}
-
 - (void)handleDealCardsPacket:(PacketDealCards *)packet
 {
     [packet.cards enumerateKeysAndObjectsUsingBlock:^(NSString *peerID, NSArray *cards, BOOL *stop) {
@@ -430,8 +500,22 @@
 
 - (void)handleActivatePlayerPacket:(PacketActivatePlayer *)packet
 {
+    // At the beginning of a new round where the server is the dealer, ignore the ActivatePlayer packet to prevent the next client from processing it and immediately turning over the server player's topmost card on their screen (before the server has even tapped the closed card stack to turn over a card!)
+    if (self.firstTime) {
+        self.firstTime = NO;
+        return;
+    }
+    
     Player *player = [self playerWithPeerID:packet.peerID];
     if (!player) return;
+    
+    // Since the game rules call for automatically activating the next player when a player turns over a card, and all clients already receive an ActivatePlayer packet, this a good place to implement showing the turned-over card on the other clients (i.e., the client is not the active player), before activating the new player
+    if (self.activePlayerPosition != PlayerPositionBottom) {
+        [self turnCardForActivePlayer];
+    }
+    
+    [self performSelector:@selector(activatePlayerWithPeerID:) withObject:packet.peerID afterDelay:0.5f];
+    
     self.activePlayerPosition = player.position;
     [self activatePlayerAtPosition:self.activePlayerPosition];
 }
