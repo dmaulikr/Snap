@@ -9,6 +9,7 @@
 #import "Packet.h"
 #import "PacketSignInResponse.h"
 #import "PacketServerReady.h"
+#import "PacketActivatePlayer.h"
 #import "PacketOtherClientQuit.h"
 #import "PacketDealCards.h"
 #import "Card.h"
@@ -17,7 +18,7 @@
 
 + (id)packetWithType:(PacketType)packetType
 {
-    return [[[self class] alloc] initWithType:packetType];
+    return [[self alloc] initWithType:packetType];
 }
 
 + (id)packetWithData:(NSData *)data
@@ -56,6 +57,10 @@
             
         case PacketTypeDealCards:
             packet = [PacketDealCards packetWithData:data];
+            break;
+            
+        case PacketTypeActivatePlayer:
+            packet = [PacketActivatePlayer packetWithData:data];
             break;
             
         case PacketTypeOtherClientQuit:

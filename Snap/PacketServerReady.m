@@ -13,7 +13,7 @@
 
 + (id)packetWithPlayers:(NSMutableDictionary *)players
 {
-    return [[[self class] alloc] initWithPlayers:players];
+    return [[self alloc] initWithPlayers:players];
 }
 
 #pragma mark - Private methods
@@ -63,7 +63,7 @@
         players[player.peerID] = player;
     }
     
-    return [[self class] packetWithPlayers:players];
+    return [self packetWithPlayers:players];
 }
 
 @end

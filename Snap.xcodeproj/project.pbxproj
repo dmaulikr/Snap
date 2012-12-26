@@ -210,6 +210,7 @@
 		D2C764041689BF6D00952278 /* TurnCard.caf in Resources */ = {isa = PBXBuildFile; fileRef = D2C764001689BF6D00952278 /* TurnCard.caf */; };
 		D2C764051689BF6D00952278 /* WrongMatch.caf in Resources */ = {isa = PBXBuildFile; fileRef = D2C764011689BF6D00952278 /* WrongMatch.caf */; };
 		D2C764091689C56F00952278 /* PacketDealCards.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C764081689C56F00952278 /* PacketDealCards.m */; };
+		D2C76414168B426400952278 /* PacketActivatePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C76413168B426400952278 /* PacketActivatePlayer.m */; };
 		D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */; };
 /* End PBXBuildFile section */
 
@@ -442,6 +443,8 @@
 		D2C764011689BF6D00952278 /* WrongMatch.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = WrongMatch.caf; sourceTree = "<group>"; };
 		D2C764071689C56F00952278 /* PacketDealCards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PacketDealCards.h; sourceTree = "<group>"; };
 		D2C764081689C56F00952278 /* PacketDealCards.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PacketDealCards.m; sourceTree = "<group>"; };
+		D2C76412168B426400952278 /* PacketActivatePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PacketActivatePlayer.h; sourceTree = "<group>"; };
+		D2C76413168B426400952278 /* PacketActivatePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PacketActivatePlayer.m; sourceTree = "<group>"; };
 		D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SnapAdditions.h"; sourceTree = "<group>"; };
 		D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SnapAdditions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -743,6 +746,8 @@
 				D2B4FA8D167FE7C800B7BE0D /* MatchmakingServer.m */,
 				D2AA5130168487D80068E28E /* Packet.h */,
 				D2AA5131168487D80068E28E /* Packet.m */,
+				D2C76412168B426400952278 /* PacketActivatePlayer.h */,
+				D2C76413168B426400952278 /* PacketActivatePlayer.m */,
 				D2C764071689C56F00952278 /* PacketDealCards.h */,
 				D2C764081689C56F00952278 /* PacketDealCards.m */,
 				D2AA5132168487D80068E28E /* PacketOtherClientQuit.h */,
@@ -1041,6 +1046,7 @@
 				D29B047A168736B7008100FD /* Stack.m in Sources */,
 				D29B047D16874183008100FD /* CardView.m in Sources */,
 				D2C764091689C56F00952278 /* PacketDealCards.m in Sources */,
+				D2C76414168B426400952278 /* PacketActivatePlayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

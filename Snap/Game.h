@@ -15,6 +15,7 @@
 - (void)gameWaitingForServerReady:(Game *)game;
 - (void)gameWaitingForClientsReady:(Game *)game;
 - (void)gameDidBegin:(Game *)game;
+- (void)game:(Game *)game didActivatePlayer:(Player *)player;
 - (void)game:(Game *)game playerDidDisconnect:(Player *)player;
 - (void)gameShouldDealCards:(Game *)game startingWithPlayer:(Player *)player;
 @end
@@ -28,5 +29,7 @@
 - (void)startClientGameWithSession:(GKSession *)session playerName:(NSString *)name server:(NSString *)peerID;
 - (void)quitGameWithReason:(QuitReason)reason;
 - (Player *)playerAtPosition:(PlayerPosition)position;
+- (Player *)activePlayer;
+- (void)beginRound;
 
 @end

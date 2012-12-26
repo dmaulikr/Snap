@@ -12,14 +12,14 @@
 
 + (id)packetWithPlayerName:(NSString *)name
 {
-    return [[[self class] alloc] initWithPlayerName:name];
+    return [[self alloc] initWithPlayerName:name];
 }
 
 + (id)packetWithData:(NSData *)data
 {
     size_t count;
     NSString *playerName = [data rw_stringAtOffset:PACKET_HEADER_SIZE bytesRead:&count];
-    return [[self class] packetWithPlayerName:playerName];
+    return [self packetWithPlayerName:playerName];
 }
 
 #pragma mark - Private methods

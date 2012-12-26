@@ -349,11 +349,6 @@
 
 #pragma mark - GameDelegate
 
-- (void)game:(Game *)game didQuitWithReason:(QuitReason)reason
-{
-    [self.delegate gameViewController:self didQuitWithReason:reason];
-}
-
 - (void)gameWaitingForServerReady:(Game *)game
 {
     self.centerLabel.text = @"Waiting for game to start...";
@@ -369,6 +364,74 @@
     [self showPlayerLabels];
     [self calculateLabelFrames];
     [self updateWinsLabels];
+}
+
+- (void)gameShouldDealCards:(Game *)game startingWithPlayer:(Player *)startingPlayer
+{
+    self.centerLabel.text = @"Dealing...";
+    self.snapButton.hidden = YES;
+    self.nextRoundButton.hidden = YES;
+    NSTimeInterval delay = 1.0f;
+    [self.dealingCardsSound performSelector:@selector(play) withObject:nil afterDelay:delay];
+    
+    for (int i = 0; i < 26; i++) {
+        for (PlayerPosition p = startingPlayer.position; p < startingPlayer.position + 4; p++) {
+            Player *player = [self.game playerAtPosition:p % 4];
+            
+            if (player && i < [startingPlayer.closedCards.cards count]) {
+                CardView *cardView = [[CardView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CardWidth, CardHeight)];
+                cardView.card = player.closedCards.cards[i];
+                [self.cardContainerView addSubview:cardView];
+                [cardView animateDealingToPlayer:player withDelay:delay];
+                
+                // Deal cards sequentially, not all at once
+                delay += 0.1f;
+            }
+        }
+    }
+    
+    [self performSelector:@selector(afterDealing) withObject:nil afterDelay:delay];
+}
+
+- (void)afterDealing
+{
+    [self.dealingCardsSound stop];
+    self.snapButton.hidden = NO;
+    [self.game beginRound];
+}
+
+- (void)game:(Game *)game didActivatePlayer:(Player *)player
+{
+    [self showIndicatorForActivePlayer];
+}
+
+- (void)showIndicatorForActivePlayer
+{
+    [self hideActivePlayerIndicator];
+    PlayerPosition position = [self.game activePlayer].position;
+    
+    switch (position) {
+        case PlayerPositionBottom:
+            self.playerActiveBottomImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionLeft:
+            self.playerActiveLeftImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionTop:
+            self.playerActiveTopImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionRight:
+            self.playerActiveRightImageView.hidden = NO;
+            break;
+            
+        default:
+            break;
+    }
+    
+    self.centerLabel.text = position == PlayerPositionBottom ? @"Your turn. Tap the stack." : [NSString stringWithFormat:@"%@'s turn", [self.game activePlayer].name];
 }
 
 - (void)game:(Game *)game playerDidDisconnect:(Player *)player
@@ -407,37 +470,10 @@
 	}
 }
 
-- (void)gameShouldDealCards:(Game *)game startingWithPlayer:(Player *)startingPlayer
-{
-    self.centerLabel.text = @"Dealing...";
-    self.snapButton.hidden = YES;
-    self.nextRoundButton.hidden = YES;
-    NSTimeInterval delay = 1.0f;
-    [self.dealingCardsSound performSelector:@selector(play) withObject:nil afterDelay:delay];
-    
-    for (int i = 0; i < 26; i++) {
-        for (PlayerPosition p = startingPlayer.position; p < startingPlayer.position + 4; p++) {
-            Player *player = [self.game playerAtPosition:p % 4];
-            
-            if (player && i < [startingPlayer.closedCards.cards count]) {
-                CardView *cardView = [[CardView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CardWidth, CardHeight)];
-                cardView.card = player.closedCards.cards[i];
-                [self.cardContainerView addSubview:cardView];
-                [cardView animateDealingToPlayer:player withDelay:delay];
-                
-                // Deal cards sequentially, not all at once
-                delay += 0.1f;
-            }
-        }
-    }
-    
-    [self performSelector:@selector(afterDealing) withObject:nil afterDelay:delay];
-}
 
-- (void)afterDealing
+- (void)game:(Game *)game didQuitWithReason:(QuitReason)reason
 {
-    [self.dealingCardsSound stop];
-    self.snapButton.hidden = NO;
+    [self.delegate gameViewController:self didQuitWithReason:reason];
 }
 
 @end

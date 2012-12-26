@@ -12,7 +12,7 @@
 
 + (id)packetWithCards:(NSDictionary *)cards startingWithPlayerPeerID:(NSString *)playerPeerID
 {
-    return [[[self class] alloc] initWithCards:cards startingWithPlayerPeerID:playerPeerID];
+    return [[self alloc] initWithCards:cards startingWithPlayerPeerID:playerPeerID];
 }
 
 #pragma mark - Private methods
@@ -23,8 +23,8 @@
     size_t count;
     NSString *startingPeerID = [data rw_stringAtOffset:offset bytesRead:&count];
     offset += count;
-    NSDictionary *cards = [[self class] cardsFromData:data atOffset:offset];
-    return  [[self class] packetWithCards:cards startingWithPlayerPeerID:startingPeerID];
+    NSDictionary *cards = [self cardsFromData:data atOffset:offset];
+    return  [self packetWithCards:cards startingWithPlayerPeerID:startingPeerID];
 }
 
 - (id)initWithCards:(NSDictionary *)cards startingWithPlayerPeerID:(NSString *)playerPeerID

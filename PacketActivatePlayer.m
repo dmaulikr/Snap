@@ -1,14 +1,14 @@
 //
-//  PacketOtherClientQuit.m
+//  PacketActivatePlayer.m
 //  Snap
 //
-//  Created by Scott Gardner on 12/20/12.
+//  Created by Scott Gardner on 12/26/12.
 //  Copyright (c) 2012 inyago LLC. All rights reserved.
 //
 
-#import "PacketOtherClientQuit.h"
+#import "PacketActivatePlayer.h"
 
-@implementation PacketOtherClientQuit
+@implementation PacketActivatePlayer
 
 + (id)packetWithPeerID:(NSString *)peerID
 {
@@ -17,9 +17,8 @@
 
 + (id)packetWithData:(NSData *)data
 {
-    size_t offset = PACKET_HEADER_SIZE;
     size_t count;
-    NSString *peerID = [data rw_stringAtOffset:offset bytesRead:&count];
+    NSString *peerID = [data rw_stringAtOffset:PACKET_HEADER_SIZE bytesRead:&count];
     return [self packetWithPeerID:peerID];
 }
 
@@ -27,7 +26,7 @@
 
 - (id)initWithPeerID:(NSString *)peerID
 {
-    if (self = [super initWithType:PacketTypeOtherClientQuit]) {
+    if (self = [super initWithType:PacketTypeActivatePlayer]) {
         _peerID = peerID;
     }
     

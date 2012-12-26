@@ -14,8 +14,9 @@
 #import "Packet.h"
 #import "PacketSignInResponse.h"
 #import "PacketServerReady.h"
-#import "PacketOtherClientQuit.h"
 #import "PacketDealCards.h"
+#import "PacketActivatePlayer.h"
+#import "PacketOtherClientQuit.h"
 
 @interface Game () <GKSessionDelegate>
 @property (nonatomic, assign) GameState state;
@@ -140,7 +141,28 @@
 	return player;
 }
 
+- (void)beginRound
+{
+    [self activatePlayerAtPosition:self.activePlayerPosition];
+}
+
 #pragma mark - Private methods
+
+- (Player *)activePlayer
+{
+    return [self playerAtPosition:self.activePlayerPosition];
+}
+
+- (void)activatePlayerAtPosition:(PlayerPosition)position
+{
+    if (self.isServer) {
+        NSString *peerID = [self activePlayer].peerID;
+        Packet *packet = [PacketActivatePlayer packetWithPeerID:peerID];
+        [self sendPacketToAllClients:packet];
+    }
+    
+    [self.delegate game:self didActivatePlayer:[self activePlayer]];
+}
 
 /*
  Apple recommends GameKit transmissions be 1,000 bytes or less (which can then be transmitted in a single TCP/IP packet). Larger message need to be split up and then recombined by the receiver, which GameKit will handle but it is slower.
@@ -225,6 +247,12 @@
         case PacketTypeDealCards:
             if (self.state == GameStateDealing) {
                 [self handleDealCardsPacket:(PacketDealCards *)packet];
+            }
+            break;
+            
+        case PacketTypeActivatePlayer:
+            if (self.state == GameStatePlaying) {
+                [self handleActivatePlayerPacket:(PacketActivatePlayer *)packet];
             }
             break;
             
@@ -354,7 +382,7 @@
         }
     }
     
-    Player *startingPlayer = [self playerAtPosition:self.activePlayerPosition];
+    Player *startingPlayer = [self activePlayer];
     
     NSMutableDictionary *playerCards = [NSMutableDictionary dictionaryWithCapacity:4];
     
@@ -367,6 +395,29 @@
     [self sendPacketToAllClients:packet];
     
     [self.delegate gameShouldDealCards:self startingWithPlayer:startingPlayer];
+}
+
+- (void)handleDealCardsPacket:(PacketDealCards *)packet
+{
+    [packet.cards enumerateKeysAndObjectsUsingBlock:^(NSString *peerID, NSArray *cards, BOOL *stop) {
+        Player *player = [self playerWithPeerID:peerID];
+        [player.closedCards addCards:cards];
+    }];
+    
+    Player *startingPlayer = [self playerWithPeerID:packet.startingPeerID];
+    self.activePlayerPosition = startingPlayer.position;
+    Packet *responsePacket = [Packet packetWithType:PacketTypeClientDealtCards];
+    [self sendPacketToServer:responsePacket];
+    self.state = GameStatePlaying;
+    [self.delegate gameShouldDealCards:self startingWithPlayer:startingPlayer];
+}
+
+- (void)handleActivatePlayerPacket:(PacketActivatePlayer *)packet
+{
+    Player *player = [self playerWithPeerID:packet.peerID];
+    if (!player) return;
+    self.activePlayerPosition = player.position;
+    [self activatePlayerAtPosition:self.activePlayerPosition];
 }
 
 - (void)clientDidDisconnect:(NSString *)peerID
@@ -388,21 +439,6 @@
             }
         }
     }
-}
-
-- (void)handleDealCardsPacket:(PacketDealCards *)packet
-{
-    [packet.cards enumerateKeysAndObjectsUsingBlock:^(NSString *peerID, NSArray *cards, BOOL *stop) {
-        Player *player = [self playerWithPeerID:peerID];
-        [player.closedCards addCards:cards];
-    }];
-    
-    Player *startingPlayer = [self playerWithPeerID:packet.startingPeerID];
-    self.activePlayerPosition = startingPlayer.position;
-    Packet *responsePacket = [Packet packetWithType:PacketTypeClientDealtCards];
-    [self sendPacketToServer:responsePacket];
-    self.state = GameStatePlaying;
-    [self.delegate gameShouldDealCards:self startingWithPlayer:startingPlayer];
 }
 
 #pragma mark - GKSessionDelegate
