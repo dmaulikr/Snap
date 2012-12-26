@@ -15,6 +15,7 @@
 - (id)init
 {
     if (self = [super init]) {
+        _lastPacketNumberReceived = -1; // First packet received will be number 0
         _closedCards = [Stack new];
         _openCards = [Stack new];
     }

@@ -20,6 +20,7 @@
 @property (nonatomic, strong) Stack *openCards;
 
 @property (nonatomic, assign) BOOL receivedResponse;
+@property (nonatomic, assign) int lastPacketNumberReceived;
 
 - (Card *)turnOverTopCard;
 

@@ -18,6 +18,9 @@
 #import "PacketActivatePlayer.h"
 #import "PacketOtherClientQuit.h"
 
+// Global variable
+PlayerPosition testPosition;
+
 @interface Game () <GKSessionDelegate>
 @property (nonatomic, assign) GameState state;
 @property (nonatomic, strong) GKSession *session;
@@ -29,11 +32,12 @@
 @property (nonatomic, assign) BOOL firstTime;
 @property (nonatomic, assign) BOOL busyDealing;
 @property (nonatomic, assign) BOOL hasTurnedCard;
+@property (nonatomic, assign) int sendPacketNumber;
 @end
 
 @implementation Game
 
-// TODO:1 Currently the game isn’t going to be 100% fair. The user who flips a card sees that card before any of the other clients, and therefore has an advantage (it takes a few milliseconds to send out the network packets). We could compensate for this by delaying the turn-over animation for the currently active player. One way to do this is to measure the latency between the devices (the network "ping"). The server also has an advantage because it always receives the packets before the other clients do.
+// TODO:1 Currently the game isn’t going to be 100% fair. The player who flips a card sees that card before any of the other clients, and therefore has an advantage (it takes a few milliseconds to send out the network packets). We could compensate for this by delaying the turn-over animation for the currently active player. One way to do this is to measure the latency between the devices (the network "ping"). The server also has an advantage, because it receives the packets first and then sends out packets to the clients.
 
 - (id)init
 {
@@ -297,8 +301,23 @@
     [self activatePlayerAtPosition:self.activePlayerPosition];
 }
 
+- (void)sendPacketToServer:(Packet *)packet
+{
+    if (packet.packetNumber != -1) packet.packetNumber = self.sendPacketNumber++;
+    
+    GKSendDataMode dataMode = GKSendDataReliable;
+    NSData *data = [packet data];
+    NSError *error;
+    
+    if (![self.session sendData:data toPeers:@[self.serverPeerID] withDataMode:dataMode error:&error]) {
+        NSLog(@"Error sending data to server: %@", error);
+    }
+}
+
 - (void)sendPacketToAllClients:(Packet *)packet
 {
+    if (packet.packetNumber != -1) packet.packetNumber = self.sendPacketNumber++;
+    
     /*
      Apple recommends GameKit transmissions be 1,000 bytes or less (which can then be transmitted in a single TCP/IP packet). Larger message need to be split up and then recombined by the receiver, which GameKit will handle but it is slower.
      */
@@ -314,17 +333,6 @@
     
     if (![self.session sendDataToAllPeers:data withDataMode:dataMode error:&error]) {
         NSLog(@"Error sending data to clients: %@", error);
-    }
-}
-
-- (void)sendPacketToServer:(Packet *)packet
-{
-    GKSendDataMode dataMode = GKSendDataReliable;
-    NSData *data = [packet data];
-    NSError *error;
-    
-    if (![self.session sendData:data toPeers:@[self.serverPeerID] withDataMode:dataMode error:&error]) {
-        NSLog(@"Error sending data to server: %@", error);
     }
 }
 
@@ -345,6 +353,12 @@
     Player *player = [self playerWithPeerID:peerID];
     
     if (player) {
+        if (packet.packetNumber != -1 && packet.packetNumber <= player.lastPacketNumberReceived) {
+            NSLog(@"Out-of-order packet!");
+            return;
+        }
+        
+        player.lastPacketNumberReceived = packet.packetNumber;
         player.receivedResponse = YES;
     }
     
@@ -481,6 +495,8 @@
             otherPlayer.position = (otherPlayer.position - diff) % 4;
         }
     }];
+    
+    testPosition = diff;
 }
 
 - (void)handleDealCardsPacket:(PacketDealCards *)packet
@@ -506,18 +522,42 @@
         return;
     }
     
-    Player *player = [self playerWithPeerID:packet.peerID];
-    if (!player) return;
+    Player *newPlayer = [self playerWithPeerID:packet.peerID];
+    if (!newPlayer) return;
     
-    // Since the game rules call for automatically activating the next player when a player turns over a card, and all clients already receive an ActivatePlayer packet, this a good place to implement showing the turned-over card on the other clients (i.e., the client is not the active player), before activating the new player
-    if (self.activePlayerPosition != PlayerPositionBottom) {
-        [self turnCardForActivePlayer];
+    /*
+    // Fake missing ActivePlayer packets (to simulate receiving packets out of order)
+    static int foo = 0;
+    
+    // Every other ActivatePlayer packet will be skipped by the client who sits at the top (as seen from the server); it will only get the ActivatePlayer packet for the player after that top player, and the player in between is skipped
+    if (foo++ % 2 == 1 && testPosition == PlayerPositionTop && newPlayer.position != PlayerPositionBottom) {
+        NSLog(@"********** Faking missed message");
+        return;
+    }
+    // */
+    
+    PlayerPosition minPosition = self.activePlayerPosition;
+    if (minPosition == PlayerPositionBottom) minPosition = PlayerPositionLeft;
+    PlayerPosition maxPosition = newPlayer.position;
+    if (maxPosition < minPosition) maxPosition = PlayerPositionRight + 1;
+    
+    // Hande special situation when there is only one player (that is not the local user) who has more than one card
+    if (self.activePlayerPosition == newPlayer.position && self.activePlayerPosition != PlayerPositionBottom) {
+        maxPosition = minPosition + 1;
+    }
+    
+    for (PlayerPosition p = minPosition; p < maxPosition; p++) {
+        Player *player = [self playerAtPosition:p];
+        
+        // Skip players that have no cards or only one open card
+        if (player && [player.closedCards.cards count]) {
+            
+            // Since the game rules call for automatically activating the next player when a player turns over a card, and all clients already receive an ActivatePlayer packet, this a good place to implement showing the turned-over card on the other clients (i.e., the client is not the active player), before activating the new player
+            [self turnCardForPlayer:player];
+        }
     }
     
     [self performSelector:@selector(activatePlayerWithPeerID:) withObject:packet.peerID afterDelay:0.5f];
-    
-    self.activePlayerPosition = player.position;
-    [self activatePlayerAtPosition:self.activePlayerPosition];
 }
 
 - (void)clientDidDisconnect:(NSString *)peerID

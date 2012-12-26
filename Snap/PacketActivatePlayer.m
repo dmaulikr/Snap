@@ -27,6 +27,7 @@
 - (id)initWithPeerID:(NSString *)peerID
 {
     if (self = [super initWithType:PacketTypeActivatePlayer]) {
+        self.packetNumber = 0; // Enable packet numbers for this packet type
         _peerID = peerID;
     }
     

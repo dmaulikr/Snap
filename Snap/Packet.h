@@ -18,10 +18,11 @@
 @interface Packet : NSObject
 
 @property (nonatomic, assign) PacketType packetType;
+@property (nonatomic, assign) int packetNumber;
 
 + (id)packetWithType:(PacketType)packetType;
 + (id)packetWithData:(NSData *)data;
-+ (NSDictionary *)cardsFromData:(NSData *)data atOffset:(size_t)offset;
++ (NSMutableDictionary *)cardsFromData:(NSData *)data atOffset:(size_t)offset;
 - (id)initWithType:(PacketType)packetType;
 - (NSData *)data;
 - (void)addCards:(NSDictionary *)cards toPayload:(NSMutableData *)data;

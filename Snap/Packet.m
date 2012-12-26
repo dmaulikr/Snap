@@ -34,7 +34,7 @@
         return nil;
     }
     
-//    int packetNumber = [data rw_int32AtOffset:4]; // For future use
+    int packetNumber = [data rw_int32AtOffset:4]; // For future use
     PacketType packetType = [data rw_int16AtOffset:8];
     Packet *packet;
     
@@ -73,10 +73,11 @@
             break;
     }
     
+    packet.packetNumber = packetNumber;
     return packet;
 }
 
-+ (NSDictionary *)cardsFromData:(NSData *)data atOffset:(size_t)offset
++ (NSMutableDictionary *)cardsFromData:(NSData *)data atOffset:(size_t)offset
 {
     size_t count;
     NSMutableDictionary *cards = [NSMutableDictionary dictionaryWithCapacity:4];
@@ -106,6 +107,9 @@
 - (id)initWithType:(PacketType)packetType
 {
     if (self = [super init]) {
+        // Set all packet type's packetNumber to -1 by default, i.e., disabling use of packet numbers
+        _packetNumber = -1; // 0xffffffff
+        
         _packetType = packetType;
     }
     
@@ -114,14 +118,14 @@
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"%@, type = %d", [super description], self.packetType];
+	return [NSString stringWithFormat:@"%@, number = %d, type = %d", [super description], self.packetNumber, self.packetType];
 }
 
 - (NSData *)data
 {
     NSMutableData *data = [NSMutableData dataWithCapacity:100];
     [data rw_appendInt32:'SNAP']; // 0x534E4150
-    [data rw_appendInt32:0];
+    [data rw_appendInt32:self.packetNumber];
     [data rw_appendInt16:self.packetType];
     [self addPayloadToData:data];
     return data;
