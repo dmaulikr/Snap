@@ -10,7 +10,7 @@
 
 @implementation Card
 
-- (id)initWithSuit:(Suit)suit value:(int)value\
+- (id)initWithSuit:(Suit)suit value:(int)value
 {
     NSAssert(value >= CardAce && value <= CardKing, @"Invalid card value");
     

@@ -10,6 +10,7 @@
 
 @property (nonatomic, assign) Suit suit;
 @property (nonatomic, assign) int value;
+@property (nonatomic, assign) BOOL isTurnedOver;
 
 - (id)initWithSuit:(Suit)suit value:(int)value;
 

@@ -34,4 +34,14 @@
     #endif
 }
 
+- (Card *)turnOverTopCard
+{
+    NSAssert([self.closedCards.cards count], @"Player has no more cards");
+    Card *card = [self.closedCards topmostCard];
+    [self.closedCards removeTopmostCard];
+    [self.openCards addCardToTop:card];
+    card.isTurnedOver = YES;
+    return card;
+}
+
 @end

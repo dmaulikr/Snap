@@ -55,6 +55,13 @@
 		7BF49EAD14EBBB7300AB8472 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EA614EBBB7300AB8472 /* iTunesArtwork */; };
 		7BF49EB014EBBC7400AB8472 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EAE14EBBC7400AB8472 /* Default.png */; };
 		7BF49EB114EBBC7400AB8472 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BF49EAF14EBBC7400AB8472 /* Default@2x.png */; };
+		D22021AD168B869500DDFEE3 /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021AA168B869500DDFEE3 /* Card.m */; };
+		D22021AE168B869500DDFEE3 /* Deck.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021AC168B869500DDFEE3 /* Deck.m */; };
+		D22021B2168B86A600DDFEE3 /* Stack.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021B1168B86A600DDFEE3 /* Stack.m */; };
+		D22021B5168B86B400DDFEE3 /* CardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021B4168B86B400DDFEE3 /* CardView.m */; };
+		D22021BA168B86C800DDFEE3 /* PacketActivatePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021B7168B86C800DDFEE3 /* PacketActivatePlayer.m */; };
+		D22021BB168B86C800DDFEE3 /* PacketDealCards.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021B9168B86C800DDFEE3 /* PacketDealCards.m */; };
+		D22021BD168B86E300DDFEE3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D22021BC168B86E300DDFEE3 /* Default-568h@2x.png */; };
 		D250FC971683C96E00CEF7DD /* Spades 3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC1B1683C96E00CEF7DD /* Spades 3@2x.png */; };
 		D250FC981683C96E00CEF7DD /* Spades 4.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC1C1683C96E00CEF7DD /* Spades 4.png */; };
 		D250FC991683C96E00CEF7DD /* Spades 4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC1D1683C96E00CEF7DD /* Spades 4@2x.png */; };
@@ -180,13 +187,8 @@
 		D250FD111683C96E00CEF7DD /* Spades 2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC951683C96E00CEF7DD /* Spades 2@2x.png */; };
 		D250FD121683C96E00CEF7DD /* Spades 3.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC961683C96E00CEF7DD /* Spades 3.png */; };
 		D250FD151683D1DB00CEF7DD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D250FD141683D1DB00CEF7DD /* QuartzCore.framework */; };
-		D27C21801684A7E6005C0079 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D27C217F1684A7E6005C0079 /* Default-568h@2x.png */; };
 		D27D09AF1680E879007617C8 /* GameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D27D09AD1680E879007617C8 /* GameViewController.xib */; };
 		D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */; };
-		D29B047416851234008100FD /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = D29B047316851234008100FD /* Card.m */; };
-		D29B0477168513A7008100FD /* Deck.m in Sources */ = {isa = PBXBuildFile; fileRef = D29B0476168513A7008100FD /* Deck.m */; };
-		D29B047A168736B7008100FD /* Stack.m in Sources */ = {isa = PBXBuildFile; fileRef = D29B0479168736B7008100FD /* Stack.m */; };
-		D29B047D16874183008100FD /* CardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D29B047C16874183008100FD /* CardView.m */; };
 		D29D9F041681B85400549513 /* NSData+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D9F031681B85400549513 /* NSData+SnapAdditions.m */; };
 		D2AA511C168487660068E28E /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = D2AA511B168487660068E28E /* Game.m */; };
 		D2AA5120168487760068E28E /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = D2AA511F168487760068E28E /* Player.m */; };
@@ -209,8 +211,6 @@
 		D2C764031689BF6D00952278 /* Dealing.caf in Resources */ = {isa = PBXBuildFile; fileRef = D2C763FF1689BF6D00952278 /* Dealing.caf */; };
 		D2C764041689BF6D00952278 /* TurnCard.caf in Resources */ = {isa = PBXBuildFile; fileRef = D2C764001689BF6D00952278 /* TurnCard.caf */; };
 		D2C764051689BF6D00952278 /* WrongMatch.caf in Resources */ = {isa = PBXBuildFile; fileRef = D2C764011689BF6D00952278 /* WrongMatch.caf */; };
-		D2C764091689C56F00952278 /* PacketDealCards.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C764081689C56F00952278 /* PacketDealCards.m */; };
-		D2C76414168B426400952278 /* PacketActivatePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C76413168B426400952278 /* PacketActivatePlayer.m */; };
 		D2F17580167F5BCD008C6A9B /* UIFont+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */; };
 /* End PBXBuildFile section */
 
@@ -268,6 +268,19 @@
 		7BF49EA614EBBB7300AB8472 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		7BF49EAE14EBBC7400AB8472 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		7BF49EAF14EBBC7400AB8472 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		D22021A9168B869500DDFEE3 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Card.h; path = Snap/Card.h; sourceTree = "<group>"; };
+		D22021AA168B869500DDFEE3 /* Card.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Card.m; path = Snap/Card.m; sourceTree = "<group>"; };
+		D22021AB168B869500DDFEE3 /* Deck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deck.h; path = Snap/Deck.h; sourceTree = "<group>"; };
+		D22021AC168B869500DDFEE3 /* Deck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Deck.m; path = Snap/Deck.m; sourceTree = "<group>"; };
+		D22021B0168B86A600DDFEE3 /* Stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Stack.h; path = Snap/Stack.h; sourceTree = "<group>"; };
+		D22021B1168B86A600DDFEE3 /* Stack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Stack.m; path = Snap/Stack.m; sourceTree = "<group>"; };
+		D22021B3168B86B400DDFEE3 /* CardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CardView.h; path = Snap/CardView.h; sourceTree = "<group>"; };
+		D22021B4168B86B400DDFEE3 /* CardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CardView.m; path = Snap/CardView.m; sourceTree = "<group>"; };
+		D22021B6168B86C800DDFEE3 /* PacketActivatePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PacketActivatePlayer.h; path = Snap/PacketActivatePlayer.h; sourceTree = "<group>"; };
+		D22021B7168B86C800DDFEE3 /* PacketActivatePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PacketActivatePlayer.m; path = Snap/PacketActivatePlayer.m; sourceTree = "<group>"; };
+		D22021B8168B86C800DDFEE3 /* PacketDealCards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PacketDealCards.h; path = Snap/PacketDealCards.h; sourceTree = "<group>"; };
+		D22021B9168B86C800DDFEE3 /* PacketDealCards.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PacketDealCards.m; path = Snap/PacketDealCards.m; sourceTree = "<group>"; };
+		D22021BC168B86E300DDFEE3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		D250FC1B1683C96E00CEF7DD /* Spades 3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spades 3@2x.png"; sourceTree = "<group>"; };
 		D250FC1C1683C96E00CEF7DD /* Spades 4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spades 4.png"; sourceTree = "<group>"; };
 		D250FC1D1683C96E00CEF7DD /* Spades 4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spades 4@2x.png"; sourceTree = "<group>"; };
@@ -393,18 +406,9 @@
 		D250FC951683C96E00CEF7DD /* Spades 2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spades 2@2x.png"; sourceTree = "<group>"; };
 		D250FC961683C96E00CEF7DD /* Spades 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spades 3.png"; sourceTree = "<group>"; };
 		D250FD141683D1DB00CEF7DD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		D27C217F1684A7E6005C0079 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		D27D09AE1680E879007617C8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Snap/en.lproj/GameViewController.xib; sourceTree = "<group>"; };
 		D28BF844167F98BA00988577 /* UIButton+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SnapAdditions.h"; sourceTree = "<group>"; };
 		D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SnapAdditions.m"; sourceTree = "<group>"; };
-		D29B047216851234008100FD /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Card.h; sourceTree = "<group>"; };
-		D29B047316851234008100FD /* Card.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Card.m; sourceTree = "<group>"; };
-		D29B0475168513A7008100FD /* Deck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deck.h; sourceTree = "<group>"; };
-		D29B0476168513A7008100FD /* Deck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Deck.m; sourceTree = "<group>"; };
-		D29B0478168736B7008100FD /* Stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stack.h; sourceTree = "<group>"; };
-		D29B0479168736B7008100FD /* Stack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stack.m; sourceTree = "<group>"; };
-		D29B047B16874183008100FD /* CardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardView.h; sourceTree = "<group>"; };
-		D29B047C16874183008100FD /* CardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardView.m; sourceTree = "<group>"; };
 		D29D9F021681B85400549513 /* NSData+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SnapAdditions.h"; sourceTree = "<group>"; };
 		D29D9F031681B85400549513 /* NSData+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SnapAdditions.m"; sourceTree = "<group>"; };
 		D2AA511A168487660068E28E /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Game.h; path = Snap/Game.h; sourceTree = "<group>"; };
@@ -441,10 +445,6 @@
 		D2C763FF1689BF6D00952278 /* Dealing.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Dealing.caf; sourceTree = "<group>"; };
 		D2C764001689BF6D00952278 /* TurnCard.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = TurnCard.caf; sourceTree = "<group>"; };
 		D2C764011689BF6D00952278 /* WrongMatch.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = WrongMatch.caf; sourceTree = "<group>"; };
-		D2C764071689C56F00952278 /* PacketDealCards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PacketDealCards.h; sourceTree = "<group>"; };
-		D2C764081689C56F00952278 /* PacketDealCards.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PacketDealCards.m; sourceTree = "<group>"; };
-		D2C76412168B426400952278 /* PacketActivatePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PacketActivatePlayer.h; sourceTree = "<group>"; };
-		D2C76413168B426400952278 /* PacketActivatePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PacketActivatePlayer.m; sourceTree = "<group>"; };
 		D2F1757E167F5BCD008C6A9B /* UIFont+SnapAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SnapAdditions.h"; sourceTree = "<group>"; };
 		D2F1757F167F5BCD008C6A9B /* UIFont+SnapAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SnapAdditions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -511,7 +511,7 @@
 				D250FC531683C96E00CEF7DD /* CorrectSnap@2x.png */,
 				D250FC541683C96E00CEF7DD /* Darken.png */,
 				D250FC551683C96E00CEF7DD /* Darken@2x.png */,
-				D27C217F1684A7E6005C0079 /* Default-568h@2x.png */,
+				D22021BC168B86E300DDFEE3 /* Default-568h@2x.png */,
 				7BF49EAE14EBBC7400AB8472 /* Default.png */,
 				7BF49EAF14EBBC7400AB8472 /* Default@2x.png */,
 				D250FC661683C96E00CEF7DD /* Diamonds 10.png */,
@@ -708,8 +708,8 @@
 		D23B0789167F54D600A05362 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				D29B047B16874183008100FD /* CardView.h */,
-				D29B047C16874183008100FD /* CardView.m */,
+				D22021B3168B86B400DDFEE3 /* CardView.h */,
+				D22021B4168B86B400DDFEE3 /* CardView.m */,
 				D27D09AD1680E879007617C8 /* GameViewController.xib */,
 				D2B4FA64167FC36700B7BE0D /* HostViewController.xib */,
 				D2B4FA73167FDB9A00B7BE0D /* JoinViewController.xib */,
@@ -723,16 +723,16 @@
 		D23B078A167F54DB00A05362 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				D29B047216851234008100FD /* Card.h */,
-				D29B047316851234008100FD /* Card.m */,
-				D29B0475168513A7008100FD /* Deck.h */,
-				D29B0476168513A7008100FD /* Deck.m */,
+				D22021A9168B869500DDFEE3 /* Card.h */,
+				D22021AA168B869500DDFEE3 /* Card.m */,
+				D22021AB168B869500DDFEE3 /* Deck.h */,
+				D22021AC168B869500DDFEE3 /* Deck.m */,
 				D2AA511A168487660068E28E /* Game.h */,
 				D2AA511B168487660068E28E /* Game.m */,
 				D2AA511E168487760068E28E /* Player.h */,
 				D2AA511F168487760068E28E /* Player.m */,
-				D29B0478168736B7008100FD /* Stack.h */,
-				D29B0479168736B7008100FD /* Stack.m */,
+				D22021B0168B86A600DDFEE3 /* Stack.h */,
+				D22021B1168B86A600DDFEE3 /* Stack.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -746,10 +746,10 @@
 				D2B4FA8D167FE7C800B7BE0D /* MatchmakingServer.m */,
 				D2AA5130168487D80068E28E /* Packet.h */,
 				D2AA5131168487D80068E28E /* Packet.m */,
-				D2C76412168B426400952278 /* PacketActivatePlayer.h */,
-				D2C76413168B426400952278 /* PacketActivatePlayer.m */,
-				D2C764071689C56F00952278 /* PacketDealCards.h */,
-				D2C764081689C56F00952278 /* PacketDealCards.m */,
+				D22021B6168B86C800DDFEE3 /* PacketActivatePlayer.h */,
+				D22021B7168B86C800DDFEE3 /* PacketActivatePlayer.m */,
+				D22021B8168B86C800DDFEE3 /* PacketDealCards.h */,
+				D22021B9168B86C800DDFEE3 /* PacketDealCards.m */,
 				D2AA5132168487D80068E28E /* PacketOtherClientQuit.h */,
 				D2AA5133168487D80068E28E /* PacketOtherClientQuit.m */,
 				D2AA5134168487D80068E28E /* PacketServerReady.h */,
@@ -1007,11 +1007,11 @@
 				D250FD111683C96E00CEF7DD /* Spades 2@2x.png in Resources */,
 				D250FD121683C96E00CEF7DD /* Spades 3.png in Resources */,
 				D2AA513D168487E40068E28E /* Action_Man.ttf in Resources */,
-				D27C21801684A7E6005C0079 /* Default-568h@2x.png in Resources */,
 				D2C764021689BF6D00952278 /* CorrectMatch.caf in Resources */,
 				D2C764031689BF6D00952278 /* Dealing.caf in Resources */,
 				D2C764041689BF6D00952278 /* TurnCard.caf in Resources */,
 				D2C764051689BF6D00952278 /* WrongMatch.caf in Resources */,
+				D22021BD168B86E300DDFEE3 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1041,12 +1041,12 @@
 				D2AA5139168487D80068E28E /* PacketOtherClientQuit.m in Sources */,
 				D2AA513A168487D80068E28E /* PacketServerReady.m in Sources */,
 				D2AA513B168487D80068E28E /* PacketSignInResponse.m in Sources */,
-				D29B047416851234008100FD /* Card.m in Sources */,
-				D29B0477168513A7008100FD /* Deck.m in Sources */,
-				D29B047A168736B7008100FD /* Stack.m in Sources */,
-				D29B047D16874183008100FD /* CardView.m in Sources */,
-				D2C764091689C56F00952278 /* PacketDealCards.m in Sources */,
-				D2C76414168B426400952278 /* PacketActivatePlayer.m in Sources */,
+				D22021AD168B869500DDFEE3 /* Card.m in Sources */,
+				D22021AE168B869500DDFEE3 /* Deck.m in Sources */,
+				D22021B2168B86A600DDFEE3 /* Stack.m in Sources */,
+				D22021B5168B86B400DDFEE3 /* CardView.m in Sources */,
+				D22021BA168B86C800DDFEE3 /* PacketActivatePlayer.m in Sources */,
+				D22021BB168B86C800DDFEE3 /* PacketDealCards.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

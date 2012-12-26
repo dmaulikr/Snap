@@ -14,5 +14,7 @@
 
 - (void)addCardToTop:(Card *)card;
 - (void)addCards:(NSArray *)cards;
+- (Card *)topmostCard;
+- (void)removeTopmostCard;
 
 @end

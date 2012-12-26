@@ -11,6 +11,15 @@
 
 @implementation Stack
 
+- (id)init
+{
+    if (self = [super init]) {
+        _cards = [NSMutableArray arrayWithCapacity:26];
+    }
+    
+    return self;
+}
+
 - (void)addCardToTop:(Card *)card
 {
     NSAssert(card, @"Card cannot be nil");
@@ -23,13 +32,14 @@
     self.cards = [cards mutableCopy];
 }
 
-- (id)init
+- (Card *)topmostCard
 {
-    if (self = [super init]) {
-        _cards = [NSMutableArray arrayWithCapacity:26];
-    }
-    
-    return self;
+    return [self.cards lastObject];
+}
+
+- (void)removeTopmostCard
+{
+    [self.cards removeLastObject];
 }
 
 @end

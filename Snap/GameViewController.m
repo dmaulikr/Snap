@@ -47,6 +47,9 @@
 @property (nonatomic, strong) UIAlertView *alertView;
 
 @property (nonatomic, strong) AVAudioPlayer *dealingCardsSound;
+@property (nonatomic, strong) AVAudioPlayer *turnCardSound;
+
+@property (nonatomic, strong) UIImageView *tappedView;
 @end
 
 @implementation GameViewController
@@ -159,6 +162,53 @@
     self.dealingCardsSound.numberOfLoops = -1;
     
     [self.dealingCardsSound prepareToPlay];
+    
+    url = [[NSBundle mainBundle] URLForResource:@"TurnCard" withExtension:@"caf"];
+    self.turnCardSound = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+    [self.turnCardSound prepareToPlay];
+}
+
+- (void)showTappedView
+{
+    Player *player = [self.game playerAtPosition:PlayerPositionBottom];
+    Card *card = [player.closedCards topmostCard];
+    
+    if (card) {
+        CardView *cardView = [self cardViewForCard:card];
+        
+        // Darken the card view of the topmost card
+        if (!self.tappedView) {
+            self.tappedView = [[UIImageView alloc] initWithFrame:cardView.bounds];
+            self.tappedView.backgroundColor = [UIColor clearColor];
+            self.tappedView.image = [UIImage imageNamed:@"Darken"];
+            self.tappedView.alpha = 0.6f;
+            [self.view addSubview:self.tappedView];
+        } else {
+            self.tappedView.hidden = NO;
+        }
+        
+        self.tappedView.center = cardView.center;
+        self.tappedView.transform = cardView.transform;
+    }
+}
+
+- (void)hideTappedView
+{
+    self.tappedView.hidden = YES;
+}
+
+- (CardView *)cardViewForCard:(Card *)card
+{
+    __block CardView *cardViewForCard;
+    
+    [self.cardContainerView.subviews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
+        if (cardView.card == card) {
+            cardViewForCard = cardView;
+            *stop = YES;
+        }
+    }];
+    
+    return cardViewForCard;
 }
 
 - (void)updateWinsLabels
@@ -298,6 +348,13 @@
 	}
 }
 
+- (void)afterDealing
+{
+    [self.dealingCardsSound stop];
+    self.snapButton.hidden = NO;
+    [self.game beginRound];
+}
+
 #pragma mark - IBActions
 
 - (IBAction)exitAction:(id)sender
@@ -313,18 +370,23 @@
 
 - (IBAction)turnOverPressed:(id)sender
 {
+    [self showTappedView];
 }
 
 - (IBAction)turnOverEnter:(id)sender
 {
+    [self showTappedView];
 }
 
 - (IBAction)turnOverExit:(id)sender
 {
+    [self hideTappedView];
 }
 
 - (IBAction)turnOverAction:(id)sender
 {
+    [self hideTappedView];
+    [self.game turnCardForPlayerAtBottom];
 }
 
 - (IBAction)snapAction:(id)sender
@@ -393,13 +455,6 @@
     [self performSelector:@selector(afterDealing) withObject:nil afterDelay:delay];
 }
 
-- (void)afterDealing
-{
-    [self.dealingCardsSound stop];
-    self.snapButton.hidden = NO;
-    [self.game beginRound];
-}
-
 - (void)game:(Game *)game didActivatePlayer:(Player *)player
 {
     [self showIndicatorForActivePlayer];
@@ -432,6 +487,13 @@
     }
     
     self.centerLabel.text = position == PlayerPositionBottom ? @"Your turn. Tap the stack." : [NSString stringWithFormat:@"%@'s turn", [self.game activePlayer].name];
+}
+
+- (void)game:(Game *)game player:(Player *)player turnedOverCard:(Card *)card
+{
+    [self.turnCardSound play];
+    CardView *cardView = [self cardViewForCard:card];
+    [cardView animateTurningOverForPlayer:player];
 }
 
 - (void)game:(Game *)game playerDidDisconnect:(Player *)player
@@ -469,7 +531,6 @@
             break;
 	}
 }
-
 
 - (void)game:(Game *)game didQuitWithReason:(QuitReason)reason
 {

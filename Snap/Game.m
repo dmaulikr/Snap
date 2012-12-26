@@ -397,6 +397,22 @@
     [self.delegate gameShouldDealCards:self startingWithPlayer:startingPlayer];
 }
 
+- (void)turnCardForPlayerAtBottom
+{
+    if (self.state == GameStatePlaying && self.activePlayerPosition == PlayerPositionBottom && [[self activePlayer].closedCards.cards count]) {
+        [self turnCardForPlayer:[self activePlayer]];
+    }
+}
+
+#pragma mark - Private methods
+
+- (void)turnCardForPlayer:(Player *)player
+{
+    NSAssert([player.closedCards.cards count], @"Player has no more cards");
+    Card *card = [player turnOverTopCard];
+    [self.delegate game:self player:player turnedOverCard:card];
+}
+
 - (void)handleDealCardsPacket:(PacketDealCards *)packet
 {
     [packet.cards enumerateKeysAndObjectsUsingBlock:^(NSString *peerID, NSArray *cards, BOOL *stop) {

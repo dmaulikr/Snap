@@ -21,4 +21,6 @@
 
 @property (nonatomic, assign) BOOL receivedResponse;
 
+- (Card *)turnOverTopCard;
+
 @end
