@@ -12,8 +12,11 @@
 
 @property (nonatomic, strong) NSMutableArray *cards;
 
+- (NSUInteger)cardCount;
 - (void)addCardToTop:(Card *)card;
+- (void)addCardToBottom:(Card *)card;
 - (void)addCards:(NSArray *)cards;
+- (void)removeAllCards;
 - (Card *)topmostCard;
 - (void)removeTopmostCard;
 

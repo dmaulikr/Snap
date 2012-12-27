@@ -159,6 +159,10 @@ PlayerPosition testPosition;
     [self.delegate game:self didQuitWithReason:reason];
 }
 
+- (void)resumeAfterRecyclingCardsForPlayer:(Player *)player
+{
+}
+
 #pragma mark - Private methods
 
 - (void)beginGame
@@ -193,11 +197,11 @@ PlayerPosition testPosition;
     Deck *deck = [Deck new];
     [deck shuffle];
     
-    while ([deck.cards count]) {
+    while ([deck cardsRemaining]) {
         for (PlayerPosition p = self.startingPlayerPosition; p <  self.startingPlayerPosition + 4; p++) {
             Player *player = [self playerAtPosition:(p % 4)];
             
-            if (player && [deck.cards count]) {
+            if (player && [deck cardsRemaining]) {
                 Card *card = [deck draw];
                 [player.closedCards addCardToTop:card];
             }
@@ -221,7 +225,7 @@ PlayerPosition testPosition;
 
 - (void)turnCardForPlayer:(Player *)player
 {
-    NSAssert([player.closedCards.cards count], @"Player has no more cards");
+    NSAssert([player.closedCards cardCount], @"Player has no more cards");
     
     // Prevents player being able to quickly tap the closed card stack to turn over multiple cards during one turn
     self.hasTurnedCard = YES;
@@ -245,7 +249,7 @@ PlayerPosition testPosition;
         && !self.busyDealing
         
         && !self.hasTurnedCard
-        && [[self activePlayer].closedCards.cards count]) {
+        && [[self activePlayer].closedCards cardCount]) {
         [self turnCardForActivePlayer];
         
         if (!self.isServer) {
@@ -271,10 +275,18 @@ PlayerPosition testPosition;
         Player *nextPlayer = [self activePlayer];
         
         if (nextPlayer) {
-            // This will also send a PacketActivatePlayer packet to all clients
-            [self activatePlayerAtPosition:self.activePlayerPosition];
+            if ([nextPlayer.closedCards cardCount]) {
+                // This will also send a PacketActivatePlayer packet to all clients
+                [self activatePlayerAtPosition:self.activePlayerPosition];
+                
+                return;
+            }
             
-            return;
+            if ([nextPlayer shouldRecycle]) {
+                [self activatePlayerAtPosition:self.activePlayerPosition];
+                [self recycleCardsForActivePlayer];
+                return;
+            }
         }
     }
 }
@@ -299,6 +311,18 @@ PlayerPosition testPosition;
     Player *player = [self playerWithPeerID:peerID];
     self.activePlayerPosition = player.position;
     [self activatePlayerAtPosition:self.activePlayerPosition];
+    
+    if ([player shouldRecycle]) {
+        [self recycleCardsForActivePlayer];
+    }
+}
+
+- (void)recycleCardsForActivePlayer
+{
+    Player *player = [self activePlayer];
+    NSArray *recycledCards = [player recycleCards];
+    NSAssert([recycledCards count], @"Should have cards to recycle");
+    [self.delegate game:self didRecycleCards:recycledCards forPlayer:player];
 }
 
 - (void)sendPacketToServer:(Packet *)packet
@@ -550,7 +574,7 @@ PlayerPosition testPosition;
         Player *player = [self playerAtPosition:p];
         
         // Skip players that have no cards or only one open card
-        if (player && [player.closedCards.cards count]) {
+        if (player && [player.closedCards cardCount]) {
             
             // Since the game rules call for automatically activating the next player when a player turns over a card, and all clients already receive an ActivatePlayer packet, this a good place to implement showing the turned-over card on the other clients (i.e., the client is not the active player), before activating the new player
             [self turnCardForPlayer:player];

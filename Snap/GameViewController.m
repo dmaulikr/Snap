@@ -440,7 +440,7 @@
         for (PlayerPosition p = startingPlayer.position; p < startingPlayer.position + 4; p++) {
             Player *player = [self.game playerAtPosition:p % 4];
             
-            if (player && i < [startingPlayer.closedCards.cards count]) {
+            if (player && i < [startingPlayer.closedCards cardCount]) {
                 CardView *cardView = [[CardView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CardWidth, CardHeight)];
                 cardView.card = player.closedCards.cards[i];
                 [self.cardContainerView addSubview:cardView];
@@ -494,6 +494,28 @@
     [self.turnCardSound play];
     CardView *cardView = [self cardViewForCard:card];
     [cardView animateTurningOverForPlayer:player];
+}
+
+- (void)game:(Game *)game didRecycleCards:(NSArray *)recycledCards forPlayer:(Player *)player
+{
+    self.snapButton.enabled = NO;
+    self.turnOverButton.enabled = NO;
+    __block NSTimeInterval delay = 0.0f;
+    
+    [recycledCards enumerateObjectsUsingBlock:^(Card *card, NSUInteger idx, BOOL *stop) {
+        CardView *cardView = [self cardViewForCard:card];
+        [cardView animateRecycleForPlayer:player withDelay:delay];
+        delay += 0.025f;
+    }];
+    
+    [self performSelector:@selector(afterRecyclingCardsForPlayer:) withObject:player afterDelay:delay + 0.5f];
+}
+
+- (void)afterRecyclingCardsForPlayer:(Player *)player
+{
+    self.snapButton.enabled = YES;
+    self.turnOverButton.enabled = YES;
+    [self.game resumeAfterRecyclingCardsForPlayer:player];
 }
 
 - (void)game:(Game *)game playerDidDisconnect:(Player *)player

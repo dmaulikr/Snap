@@ -113,6 +113,17 @@ const CGFloat CardHeight = 99.0f;
     }];
 }
 
+- (void)animateRecycleForPlayer:(Player *)player withDelay:(NSTimeInterval)delay
+{
+    [self.superview sendSubviewToBack:self];
+    [self unloadFront];
+    [self loadBack];
+    
+    [UIView animateWithDuration:0.2f delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self.center = [self centerForPlayer:player];
+    } completion:nil];
+}
+
 #pragma mark - Private methods
 
 - (void)loadFront
@@ -176,6 +187,12 @@ const CGFloat CardHeight = 99.0f;
         NSString *filename = [NSString stringWithFormat:@"%@ %@", suitString, valueString];
         self.frontImageView.image = [UIImage imageNamed:filename];
     }
+}
+
+- (void)unloadFront
+{
+    [self.frontImageView removeFromSuperview];
+    self.frontImageView = nil;
 }
 
 - (void)loadBack

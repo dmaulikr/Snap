@@ -20,6 +20,11 @@
     return self;
 }
 
+- (NSUInteger)cardCount
+{
+    return [self.cards count];
+}
+
 - (void)addCardToTop:(Card *)card
 {
     NSAssert(card, @"Card cannot be nil");
@@ -27,9 +32,21 @@
     [self.cards addObject:card];
 }
 
+- (void)addCardToBottom:(Card *)card
+{
+    NSAssert(card, @"Card cannot be nil");
+    NSAssert([self.cards indexOfObject:card] == NSNotFound, @"Already have this card");
+    self.cards[0] = card;
+}
+
 - (void)addCards:(NSArray *)cards
 {
     self.cards = [cards mutableCopy];
+}
+
+- (void)removeAllCards
+{
+    [self.cards removeAllObjects];
 }
 
 - (Card *)topmostCard

@@ -14,5 +14,6 @@
 
 - (void)shuffle;
 - (Card *)draw;
+- (NSUInteger)cardsRemaining;
 
 @end

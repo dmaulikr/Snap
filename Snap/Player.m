@@ -37,12 +37,38 @@
 
 - (Card *)turnOverTopCard
 {
-    NSAssert([self.closedCards.cards count], @"Player has no more cards");
+    NSAssert([self.closedCards cardCount], @"Player has no more cards");
     Card *card = [self.closedCards topmostCard];
     [self.closedCards removeTopmostCard];
     [self.openCards addCardToTop:card];
     card.isTurnedOver = YES;
     return card;
+}
+
+- (BOOL)shouldRecycle
+{
+    return [self.closedCards cardCount] == 0 && [self.openCards cardCount] > 1;
+}
+
+- (NSArray *)recycleCards
+{
+    return [self giveAllOpenCardsToPlayer:self];
+}
+
+- (NSArray *)giveAllOpenCardsToPlayer:(Player *)otherPlayer
+{
+    NSUInteger count = [self.openCards cardCount];
+    NSMutableArray *movedCards = [NSMutableArray arrayWithCapacity:count];
+    
+    for (NSUInteger i = 0; i < count; i++) {
+        Card *card = self.openCards.cards[i];
+        card.isTurnedOver = NO;
+        [otherPlayer.closedCards addCardToBottom:card];
+        [movedCards addObject:card];
+    }
+    
+    [self.openCards removeAllCards];
+    return movedCards;
 }
 
 @end
