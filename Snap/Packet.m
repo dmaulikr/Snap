@@ -12,6 +12,7 @@
 #import "PacketActivatePlayer.h"
 #import "PacketOtherClientQuit.h"
 #import "PacketDealCards.h"
+#import "PacketPlayerShouldSnap.h"
 #import "Card.h"
 
 @implementation Packet
@@ -62,6 +63,10 @@
             
         case PacketTypeActivatePlayer:
             packet = [PacketActivatePlayer packetWithData:data];
+            break;
+            
+        case PacketTypePlayerShouldSnap:
+            packet = [PacketPlayerShouldSnap packetWithData:data];
             break;
             
         case PacketTypeOtherClientQuit:

@@ -20,6 +20,7 @@
 // TODO: Should be game:player:didTurnOverCard:
 - (void)game:(Game *)game player:(Player *)player turnedOverCard:(Card *)card;
 
+- (void)game:(Game *)game playerCalledSnapWithNoMatch:(Player *)player;
 - (void)game:(Game *)game didRecycleCards:(NSArray *)recycledCards forPlayer:(Player *)player;
 - (void)game:(Game *)game playerDidDisconnect:(Player *)disconnectedPlayer redistributedCards:(NSDictionary *)redistributedCards;
 - (void)game:(Game *)game didQuitWithReason:(QuitReason)reason;
@@ -37,6 +38,7 @@
 - (Player *)activePlayer;
 - (Player *)playerAtPosition:(PlayerPosition)position;
 - (void)turnCardForPlayerAtBottom;
+- (void)playerCalledSnap:(Player *)player;
 - (void)resumeAfterRecyclingCardsForPlayer:(Player *)player;
 
 @end

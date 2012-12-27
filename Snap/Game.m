@@ -16,6 +16,7 @@
 #import "PacketServerReady.h"
 #import "PacketDealCards.h"
 #import "PacketActivatePlayer.h"
+#import "PacketPlayerShouldSnap.h"
 #import "PacketOtherClientQuit.h"
 
 // Global variable
@@ -87,8 +88,11 @@ PlayerPosition testPosition;
                 player.position = PlayerPositionTop;
                 break;
                 
-            default:
+            case 2:
                 player.position = PlayerPositionRight;
+                break;
+                
+            default:
                 break;
         }
     }];
@@ -159,6 +163,16 @@ PlayerPosition testPosition;
     [self.delegate game:self didQuitWithReason:reason];
 }
 
+- (void)playerCalledSnap:(Player *)player
+{
+    if (self.isServer) {
+        [self.delegate game:self playerCalledSnapWithNoMatch:player];
+    } else {
+        Packet *packet = [PacketPlayerShouldSnap packetWithPeerID:self.session.peerID];
+        [self sendPacketToServer:packet];
+    }
+}
+
 - (void)resumeAfterRecyclingCardsForPlayer:(Player *)player
 {
 }
@@ -187,7 +201,7 @@ PlayerPosition testPosition;
     self.activePlayerPosition = self.startingPlayerPosition;
     
     // Uncomment to force server to be active player at start
-    self.activePlayerPosition = PlayerPositionBottom;
+//     self.activePlayerPosition = PlayerPositionBottom;
 }
 
 - (void)dealCards
@@ -480,6 +494,14 @@ PlayerPosition testPosition;
             }
             break;
             
+        case PacketTypePlayerShouldSnap:
+            if (self.state == GameStatePlaying) {
+                NSString *peerID = ((PacketPlayerShouldSnap *)packet).peerID;
+                Player *player = [self playerWithPeerID:peerID];
+                if (player) [self playerCalledSnap:player];
+            }
+            break;
+            
         case PacketTypeClientQuit:
             [self clientDidDisconnect:player.peerID redistributedCards:nil]; // TODO:
             break;
@@ -581,6 +603,7 @@ PlayerPosition testPosition;
         }
     }
     
+    if (self.activePlayerPosition != PlayerPositionBottom) [self turnCardForActivePlayer];
     [self performSelector:@selector(activatePlayerWithPeerID:) withObject:packet.peerID afterDelay:0.5f];
 }
 
@@ -597,7 +620,7 @@ PlayerPosition testPosition;
                 // Redistribute disconnected player's cards to remaining players
                 if (self.isServer) {
                     redistributedCards = [self redistributeCardsOfDisconnectedPlayer:player];
-                    PacketOtherClientQuit *packet = [PacketOtherClientQuit packetWithPeerID:peerID cards:nil]; // TODO:
+                    PacketOtherClientQuit *packet = [PacketOtherClientQuit packetWithPeerID:peerID cards:redistributedCards];
                     [self sendPacketToAllClients:packet];
                 }
                 

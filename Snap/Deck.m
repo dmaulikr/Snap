@@ -57,9 +57,8 @@
 - (void)setUpCards
 {
     for (Suit suit = SuitClubs; suit <= SuitSpades; suit++) {
-        for (int value = CardAce; value <= CardKing; value++) {
-        // To reduce deck to 8 cards (4 Queens, 4 Kings)
-//        for (int value = CardQueen; value <= CardKing; value++) {
+        // Setting value to CardQueen will reduce deck to 8 cards (4 Queens, 4 Kings)
+        for (int value = CardAce /*CardQueen*/; value <= CardKing; value++) {
             Card *card = [[Card alloc] initWithSuit:suit value:value];
             [self.cards addObject:card];
         }

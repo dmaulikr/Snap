@@ -48,6 +48,8 @@
 
 @property (nonatomic, strong) AVAudioPlayer *dealingCardsSound;
 @property (nonatomic, strong) AVAudioPlayer *turnCardSound;
+@property (nonatomic, strong) AVAudioPlayer *wrongMatchSound;
+@property (nonatomic, strong) AVAudioPlayer *correctMatchSound;
 
 @property (nonatomic, strong) UIImageView *tappedView;
 @end
@@ -83,7 +85,7 @@
     #endif
     
     [self.dealingCardsSound stop];
-    [[ AVAudioSession sharedInstance] setActive:NO error:nil];
+    [[AVAudioSession sharedInstance] setActive:NO error:nil];
 }
 
 #pragma mark - Private methods
@@ -117,6 +119,111 @@
 		self.playerNameRightLabel.hidden = NO;
 		self.playerWinsRightLabel.hidden = NO;
 	}
+}
+
+- (void)showIndicatorForActivePlayer
+{
+    [self hideActivePlayerIndicator];
+    PlayerPosition position = [self.game activePlayer].position;
+    
+    switch (position) {
+        case PlayerPositionBottom:
+            self.playerActiveBottomImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionLeft:
+            self.playerActiveLeftImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionTop:
+            self.playerActiveTopImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionRight:
+            self.playerActiveRightImageView.hidden = NO;
+            break;
+            
+        default:
+            break;
+    }
+    
+    self.centerLabel.text = position == PlayerPositionBottom ? @"Your turn. Tap the stack." : [NSString stringWithFormat:@"%@'s turn", [self.game activePlayer].name];
+}
+
+- (void)showSplashView:(UIImageView *)splashView forPlayer:(Player *)player
+{
+	splashView.center = [self splashViewPositionForPlayer:player];
+	splashView.hidden = NO;
+	splashView.alpha = 1.0f;
+	splashView.transform = CGAffineTransformMakeScale(2.0f, 2.0f);
+    
+	[UIView animateWithDuration:0.1f delay:0.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+         splashView.transform = CGAffineTransformIdentity;
+     } completion:^(BOOL finished) {
+         [UIView animateWithDuration:0.1f delay:1.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+              splashView.alpha = 0.0f;
+              splashView.transform = CGAffineTransformMakeScale(0.5f, 0.5f);
+          } completion:^(BOOL finished) {
+              splashView.hidden = YES;
+          }];
+     }];
+}
+
+- (void)showSnapIndicatorForPlayer:(Player *)player
+{
+    switch (player.position) {
+        case PlayerPositionBottom:
+            self.snapIndicatorBottomImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionLeft:
+            self.snapIndicatorLeftImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionTop:
+            self.snapIndicatorTopImageView.hidden = NO;
+            break;
+            
+        case PlayerPositionRight:
+            self.snapIndicatorRightImageView.hidden = NO;
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (CGPoint)splashViewPositionForPlayer:(Player *)player
+{
+	CGRect rect = self.view.bounds;
+	CGFloat midX = CGRectGetMidX(rect);
+	CGFloat midY = CGRectGetMidY(rect);
+	CGFloat maxX = CGRectGetMaxX(rect);
+	CGFloat maxY = CGRectGetMaxY(rect);
+    CGPoint splashViewPositionForPlayer;
+    
+    switch (player.position) {
+        case PlayerPositionBottom:
+            splashViewPositionForPlayer = CGPointMake(midX, maxY - CardHeight / 2.0f - 30.0f);
+            break;
+            
+        case PlayerPositionLeft:
+            splashViewPositionForPlayer = CGPointMake(31.0f + CardWidth / 2.0f, midY - 22.0f);
+            break;
+            
+        case PlayerPositionTop:
+            splashViewPositionForPlayer = CGPointMake(midX, 29.0f + CardHeight / 2.0f);
+            break;
+            
+        case PlayerPositionRight:
+            splashViewPositionForPlayer = CGPointMake(maxX - CardWidth + 1.0f, midY - 22.0f);
+            break;
+            
+        default:
+            break;
+    }
+    
+    return splashViewPositionForPlayer;
 }
 
 - (void)hidePlayerLabels
@@ -244,6 +351,14 @@
     url = [[NSBundle mainBundle] URLForResource:@"TurnCard" withExtension:@"caf"];
     self.turnCardSound = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
     [self.turnCardSound prepareToPlay];
+    
+    url = [[NSBundle mainBundle] URLForResource:@"WrongMatch" withExtension:@"caf"];
+	self.wrongMatchSound = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+	[self.wrongMatchSound prepareToPlay];
+    
+	url = [[NSBundle mainBundle] URLForResource:@"CorrectMatch" withExtension:@"caf"];
+	self.correctMatchSound = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+	[self.correctMatchSound prepareToPlay];
 }
 
 - (void)showTappedView
@@ -373,11 +488,11 @@
 		[self resizeLabelToFit:self.playerNameLeftLabel];
 		CGFloat labelWidth = self.playerNameLeftLabel.bounds.size.width;
         
-		CGPoint point = CGPointMake(2.0 + 20.0f + labelWidth/2.0f, 48.0f);
+		CGPoint point = CGPointMake(2.0 + 20.0f + labelWidth / 2.0f, 48.0f);
 		self.playerNameLeftLabel.center = point;
         
 		CGPoint winsPoint = point;
-		winsPoint.x += labelWidth/2.0f + 6.0f + 19.0f;
+		winsPoint.x += labelWidth / 2.0f + 6.0f + 19.0f;
 		winsPoint.y -= 0.5f;
 		self.playerWinsLeftLabel.center = winsPoint;
         
@@ -469,6 +584,7 @@
 
 - (IBAction)snapAction:(id)sender
 {
+    [self.game playerCalledSnap:[self.game playerAtPosition:PlayerPositionBottom]];
 }
 
 - (IBAction)nextRoundAction:(id)sender
@@ -512,6 +628,11 @@
     self.snapButton.hidden = YES;
     self.nextRoundButton.hidden = YES;
     NSTimeInterval delay = 1.0f;
+    
+    // Is this necessary?
+    self.dealingCardsSound.currentTime = 0.0f;
+    [_dealingCardsSound prepareToPlay];
+    
     [self.dealingCardsSound performSelector:@selector(play) withObject:nil afterDelay:delay];
     
     for (int i = 0; i < 26; i++) {
@@ -538,40 +659,21 @@
     [self showIndicatorForActivePlayer];
 }
 
-- (void)showIndicatorForActivePlayer
-{
-    [self hideActivePlayerIndicator];
-    PlayerPosition position = [self.game activePlayer].position;
-    
-    switch (position) {
-        case PlayerPositionBottom:
-            self.playerActiveBottomImageView.hidden = NO;
-            break;
-            
-        case PlayerPositionLeft:
-            self.playerActiveLeftImageView.hidden = NO;
-            break;
-            
-        case PlayerPositionTop:
-            self.playerActiveTopImageView.hidden = NO;
-            break;
-            
-        case PlayerPositionRight:
-            self.playerActiveRightImageView.hidden = NO;
-            break;
-            
-        default:
-            break;
-    }
-    
-    self.centerLabel.text = position == PlayerPositionBottom ? @"Your turn. Tap the stack." : [NSString stringWithFormat:@"%@'s turn", [self.game activePlayer].name];
-}
-
 - (void)game:(Game *)game player:(Player *)player turnedOverCard:(Card *)card
 {
     [self.turnCardSound play];
     CardView *cardView = [self cardViewForCard:card];
     [cardView animateTurningOverForPlayer:player];
+}
+
+- (void)game:(Game *)game playerCalledSnapWithNoMatch:(Player *)player
+{
+    [self.wrongMatchSound play];
+    [self showSplashView:self.wrongSnapImageView forPlayer:player];
+    [self showSnapIndicatorForPlayer:player];
+    [self performSelector:@selector(hideSnapIndicatorForPlayer:) withObject:player afterDelay:1.0f];
+    self.turnOverButton.enabled = NO;
+    self.centerLabel.text = @"No Match!";
 }
 
 - (void)game:(Game *)game didRecycleCards:(NSArray *)recycledCards forPlayer:(Player *)player
