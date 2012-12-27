@@ -36,7 +36,7 @@
 {
     NSAssert(card, @"Card cannot be nil");
     NSAssert([self.cards indexOfObject:card] == NSNotFound, @"Already have this card");
-    self.cards[0] = card;
+    [self.cards insertObject:card atIndex:0];
 }
 
 - (void)addCards:(NSArray *)cards

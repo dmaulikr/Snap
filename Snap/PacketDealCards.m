@@ -43,6 +43,4 @@
     [self addCards:self.cards toPayload:data];
 }
 
-
-
 @end

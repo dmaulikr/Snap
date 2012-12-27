@@ -128,7 +128,7 @@ const CGFloat CardHeight = 99.0f;
 {
     [self.superview sendSubviewToBack:self];
     [self unloadFront];
-    [self unloadBack];
+    [self loadBack];
     CGPoint point = [self centerForPlayer:toPlayer];
     self.angle = [self angleForPlayer:toPlayer];
     
