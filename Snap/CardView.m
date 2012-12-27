@@ -124,6 +124,20 @@ const CGFloat CardHeight = 99.0f;
     } completion:nil];
 }
 
+- (void)animateCloseAndMoveFromPlayer:(Player *)fromPlayer toPlayer:(Player *)toPlayer withDelay:(NSTimeInterval)delay
+{
+    [self.superview sendSubviewToBack:self];
+    [self unloadFront];
+    [self unloadBack];
+    CGPoint point = [self centerForPlayer:toPlayer];
+    self.angle = [self angleForPlayer:toPlayer];
+    
+    [UIView animateWithDuration:0.4f delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self.center = point;
+        self.transform = CGAffineTransformMakeRotation(self.angle);
+    } completion:nil];
+}
+
 #pragma mark - Private methods
 
 - (void)loadFront

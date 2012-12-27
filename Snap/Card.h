@@ -13,5 +13,6 @@
 @property (nonatomic, assign) BOOL isTurnedOver;
 
 - (id)initWithSuit:(Suit)suit value:(int)value;
+- (BOOL)isEqualToCard:(Card *)otherCard;
 
 @end

@@ -430,7 +430,7 @@ PlayerPosition testPosition;
         case PacketTypeOtherClientQuit:
             if (self.state != GameStateQuitting) {
                 PacketOtherClientQuit *quitPacket = ((PacketOtherClientQuit *)packet);
-                [self clientDidDisconnect:quitPacket.peerID];
+                [self clientDidDisconnect:quitPacket.peerID redistributedCards:quitPacket.cards];
             }
             break;
             
@@ -481,7 +481,7 @@ PlayerPosition testPosition;
             break;
             
         case PacketTypeClientQuit:
-            [self clientDidDisconnect:player.peerID];
+            [self clientDidDisconnect:player.peerID redistributedCards:nil]; // TODO:
             break;
             
         default:
@@ -584,7 +584,7 @@ PlayerPosition testPosition;
     [self performSelector:@selector(activatePlayerWithPeerID:) withObject:packet.peerID afterDelay:0.5f];
 }
 
-- (void)clientDidDisconnect:(NSString *)peerID
+- (void)clientDidDisconnect:(NSString *)peerID redistributedCards:(NSDictionary *)redistributedCards
 {
     if (self.state != GameStateQuitting) {
         Player *player = [self playerWithPeerID:peerID];
@@ -594,15 +594,68 @@ PlayerPosition testPosition;
             
             if (self.state != GameStateWaitingForSignIn) {
                 // Inform clients that this player disconnected
+                // Redistribute disconnected player's cards to remaining players
                 if (self.isServer) {
-                    PacketOtherClientQuit *packet = [PacketOtherClientQuit packetWithPeerID:peerID];
+                    redistributedCards = [self redistributeCardsOfDisconnectedPlayer:player];
+                    PacketOtherClientQuit *packet = [PacketOtherClientQuit packetWithPeerID:peerID cards:nil]; // TODO:
                     [self sendPacketToAllClients:packet];
                 }
                 
-                [self.delegate game:self playerDidDisconnect:player];
+                // Add the new cards to the bottom of the closed piles
+                [redistributedCards enumerateKeysAndObjectsUsingBlock:^(NSString *peerID, NSArray *cards, BOOL *stop) {
+                    Player *player = [self playerWithPeerID:peerID];
+                    
+                    if (player) {
+                        [cards enumerateObjectsUsingBlock:^(Card *card, NSUInteger idx, BOOL *stop) {
+                            card.isTurnedOver = NO;
+                            [player.closedCards addCardToBottom:card];
+                        }];
+                    }
+                }];
+                
+                [self.delegate game:self playerDidDisconnect:player redistributedCards:redistributedCards];
+                
+                // If disconnected player was currently the active player, activate the next player
+                if (self.isServer && player.position == self.activePlayerPosition) {
+                    [self activateNextPlayer];
+                }
             }
         }
     }
+}
+
+- (NSDictionary *)redistributeCardsOfDisconnectedPlayer:(Player *)disconnectedPlayer
+{
+    /*
+     TODO:1 One situation that isn’t handled is if multiple clients disconnect at around the same time, the card redistribute messages may arrive in the wrong order. Small chance, but it could theoretically happen — after all, nothing is guaranteed when networking. We could handle this with the packetNumber scheme, but that may conflict with the ActivatePlayer packets, causing the message that activates the client itself not to be guaranteed anymore (because that ActivatePlayer packet could be dropped if it arrives out-of-order with an OtherClientQuit packet).
+     */
+    
+    NSMutableDictionary *playerCards = [NSMutableDictionary dictionaryWithCapacity:4];
+    
+    [self.players enumerateKeysAndObjectsUsingBlock:^(id key, Player *player, BOOL *stop) {
+        // Exclude still-connected players with no cards remaining (i.e., they're out of the round)
+        if (player != disconnectedPlayer && [player totalCardCount]) {
+            NSMutableArray *cards = [NSMutableArray arrayWithCapacity:26];
+            playerCards[key] = cards;
+        }
+    }];
+    
+    NSMutableArray *oldCards = [NSMutableArray arrayWithCapacity:52];
+    [oldCards addObjectsFromArray:disconnectedPlayer.closedCards.cards];
+    [oldCards addObjectsFromArray:disconnectedPlayer.openCards.cards];
+    
+    while ([oldCards count]) {
+        [playerCards enumerateKeysAndObjectsUsingBlock:^(id key, NSMutableArray *cards, BOOL *stop) {
+            if ([oldCards count]) {
+                [cards addObject:[oldCards lastObject]];
+                [oldCards removeLastObject];
+            } else {
+                *stop = YES;
+            }
+        }];
+    }
+    
+    return playerCards;
 }
 
 #pragma mark - GKSessionDelegate
@@ -615,7 +668,7 @@ PlayerPosition testPosition;
     
     if (state == GKPeerStateDisconnected) {
         if (self.isServer) {
-            [self clientDidDisconnect:peerID];
+            [self clientDidDisconnect:peerID redistributedCards:nil]; // TODO:
         } else if ([peerID isEqualToString:self.serverPeerID]) {
             [self quitGameWithReason:QuitReasonConnectionDropped];
         }

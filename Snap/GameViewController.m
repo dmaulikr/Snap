@@ -88,37 +88,6 @@
 
 #pragma mark - Private methods
 
-- (void)hidePlayerLabels
-{
-	self.playerNameBottomLabel.hidden = YES;
-	self.playerWinsBottomLabel.hidden = YES;
-    
-	self.playerNameLeftLabel.hidden = YES;
-	self.playerWinsLeftLabel.hidden = YES;
-    
-	self.playerNameTopLabel.hidden = YES;
-	self.playerWinsTopLabel.hidden = YES;
-    
-	self.playerNameRightLabel.hidden = YES;
-	self.playerWinsRightLabel.hidden = YES;
-}
-
-- (void)hideActivePlayerIndicator
-{
-	self.playerActiveBottomImageView.hidden = YES;
-	self.playerActiveLeftImageView.hidden   = YES;
-	self.playerActiveTopImageView.hidden    = YES;
-	self.playerActiveRightImageView.hidden  = YES;
-}
-
-- (void)hideSnapIndicators
-{
-	self.snapIndicatorBottomImageView.hidden = YES;
-	self.snapIndicatorLeftImageView.hidden   = YES;
-	self.snapIndicatorTopImageView.hidden    = YES;
-	self.snapIndicatorRightImageView.hidden  = YES;
-}
-
 - (void)showPlayerLabels
 {
 	Player *player = [self.game playerAtPosition:PlayerPositionBottom];
@@ -147,6 +116,115 @@
 	if (player) {
 		self.playerNameRightLabel.hidden = NO;
 		self.playerWinsRightLabel.hidden = NO;
+	}
+}
+
+- (void)hidePlayerLabels
+{
+	self.playerNameBottomLabel.hidden = YES;
+	self.playerWinsBottomLabel.hidden = YES;
+    
+	self.playerNameLeftLabel.hidden = YES;
+	self.playerWinsLeftLabel.hidden = YES;
+    
+	self.playerNameTopLabel.hidden = YES;
+	self.playerWinsTopLabel.hidden = YES;
+    
+	self.playerNameRightLabel.hidden = YES;
+	self.playerWinsRightLabel.hidden = YES;
+}
+
+- (void)hideActivePlayerIndicator
+{
+	self.playerActiveBottomImageView.hidden = YES;
+	self.playerActiveLeftImageView.hidden = YES;
+	self.playerActiveTopImageView.hidden = YES;
+	self.playerActiveRightImageView.hidden = YES;
+}
+
+- (void)hideSnapIndicators
+{
+	self.snapIndicatorBottomImageView.hidden = YES;
+	self.snapIndicatorLeftImageView.hidden = YES;
+	self.snapIndicatorTopImageView.hidden = YES;
+	self.snapIndicatorRightImageView.hidden = YES;
+}
+
+- (void)hidePlayerLabelsForPlayer:(Player *)player
+{
+	switch (player.position) {
+		case PlayerPositionBottom:
+			self.playerNameBottomLabel.hidden = YES;
+			self.playerWinsBottomLabel.hidden = YES;
+			break;
+            
+		case PlayerPositionLeft:
+			self.playerNameLeftLabel.hidden = YES;
+			self.playerWinsLeftLabel.hidden = YES;
+			break;
+            
+		case PlayerPositionTop:
+			self.playerNameTopLabel.hidden = YES;
+			self.playerWinsTopLabel.hidden = YES;
+			break;
+            
+		case PlayerPositionRight:
+			self.playerNameRightLabel.hidden = YES;
+			self.playerWinsRightLabel.hidden = YES;
+			break;
+            
+        default:
+            break;
+	}
+}
+
+- (void)hideActiveIndicatorForPlayer:(Player *)player
+{
+	switch (player.position)
+	{
+		case PlayerPositionBottom:
+            self.playerActiveBottomImageView.hidden = YES;
+            break;
+            
+		case PlayerPositionLeft:
+            self.playerActiveLeftImageView.hidden = YES;
+            break;
+            
+		case PlayerPositionTop:
+            self.playerActiveTopImageView.hidden = YES;
+            break;
+            
+		case PlayerPositionRight:
+            self.playerActiveRightImageView.hidden = YES;
+            break;
+            
+        default:
+            break;
+	}
+}
+
+- (void)hideSnapIndicatorForPlayer:(Player *)player
+{
+	switch (player.position)
+	{
+		case PlayerPositionBottom:
+            self.snapIndicatorBottomImageView.hidden = YES;
+            break;
+            
+		case PlayerPositionLeft:
+            self.snapIndicatorLeftImageView.hidden = YES;
+            break;
+            
+		case PlayerPositionTop:
+            self.snapIndicatorTopImageView.hidden = YES;
+            break;
+            
+		case PlayerPositionRight:
+            self.snapIndicatorRightImageView.hidden = YES;
+            break;
+            
+        default:
+            break;
 	}
 }
 
@@ -202,7 +280,7 @@
     __block CardView *cardViewForCard;
     
     [self.cardContainerView.subviews enumerateObjectsUsingBlock:^(CardView *cardView, NSUInteger idx, BOOL *stop) {
-        if (cardView.card == card) {
+        if ([cardView.card isEqualToCard:card]) {
             cardViewForCard = cardView;
             *stop = YES;
         }
@@ -518,40 +596,27 @@
     [self.game resumeAfterRecyclingCardsForPlayer:player];
 }
 
-- (void)game:(Game *)game playerDidDisconnect:(Player *)player
+- (void)game:(Game *)game playerDidDisconnect:(Player *)disconnectedPlayer redistributedCards:(NSDictionary *)redistributedCards
 {
-	switch (player.position) {
-		case PlayerPositionBottom:
-			self.playerNameBottomLabel.hidden = YES;
-			self.playerWinsBottomLabel.hidden = YES;
-            self.playerActiveBottomImageView.hidden = YES;
-            self.snapIndicatorBottomImageView.hidden = YES;
-			break;
+    [self hidePlayerLabelsForPlayer:disconnectedPlayer];
+    [self hideActiveIndicatorForPlayer:disconnectedPlayer];
+    [self hideSnapIndicatorForPlayer:disconnectedPlayer];
+    
+    for (PlayerPosition p = PlayerPositionBottom; p <= PlayerPositionRight; p++) {
+        Player *otherPlayer = [self.game playerAtPosition:p];
+        
+        if (otherPlayer != disconnectedPlayer) {
+            NSArray *cards = redistributedCards[otherPlayer.peerID];
             
-		case PlayerPositionLeft:
-			self.playerNameLeftLabel.hidden = YES;
-			self.playerWinsLeftLabel.hidden = YES;
-            self.playerActiveLeftImageView.hidden= YES;
-            self.snapIndicatorLeftImageView.hidden = YES;
-			break;
-            
-		case PlayerPositionTop:
-			self.playerNameTopLabel.hidden = YES;
-			self.playerWinsTopLabel.hidden = YES;
-            self.playerActiveTopImageView.hidden = YES;
-            self.snapIndicatorTopImageView.hidden = YES;
-			break;
-            
-		case PlayerPositionRight:
-			self.playerNameRightLabel.hidden = YES;
-			self.playerWinsRightLabel.hidden = YES;
-            self.playerActiveRightImageView.hidden = YES;
-            self.snapIndicatorRightImageView.hidden = YES;
-			break;
-            
-        default:
-            break;
-	}
+            [cards enumerateObjectsUsingBlock:^(Card *card, NSUInteger idx, BOOL *stop) {
+                // Is this necessary?
+                CardView *cardView = [self cardViewForCard:card];
+                cardView.card = card;
+                
+                [cardView animateCloseAndMoveFromPlayer:disconnectedPlayer toPlayer:otherPlayer withDelay:0.0f];
+            }];
+        }
+    }
 }
 
 - (void)game:(Game *)game didQuitWithReason:(QuitReason)reason

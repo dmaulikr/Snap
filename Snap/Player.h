@@ -22,6 +22,7 @@
 @property (nonatomic, assign) BOOL receivedResponse;
 @property (nonatomic, assign) int lastPacketNumberReceived;
 
+- (int)totalCardCount;
 - (Card *)turnOverTopCard;
 - (BOOL)shouldRecycle;
 - (NSArray *)recycleCards;

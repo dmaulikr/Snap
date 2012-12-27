@@ -35,6 +35,11 @@
     #endif
 }
 
+- (int)totalCardCount
+{
+    return [self.closedCards cardCount] + [self.openCards cardCount];
+}
+
 - (Card *)turnOverTopCard
 {
     NSAssert([self.closedCards cardCount], @"Player has no more cards");

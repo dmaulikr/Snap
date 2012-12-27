@@ -22,4 +22,9 @@
     return self;
 }
 
+- (BOOL)isEqualToCard:(Card *)otherCard
+{
+    return otherCard.suit == self.suit && otherCard.value == self.value;
+}
+
 @end
