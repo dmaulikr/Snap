@@ -30,9 +30,7 @@
 
 - (void)dealloc
 {
-    #ifdef DEBUG
-    NSLog(@"dealloc %@", self);
-    #endif
+    DLog(@"dealloc %@", self);
 }
 
 - (int)totalCardCount
@@ -42,7 +40,7 @@
 
 - (Card *)turnOverTopCard
 {
-    NSAssert([self.closedCards cardCount], @"Player has no more cards");
+    ZAssert([self.closedCards cardCount], @"Player has no more cards");
     Card *card = [self.closedCards topmostCard];
     [self.closedCards removeTopmostCard];
     [self.openCards addCardToTop:card];
@@ -74,6 +72,18 @@
     
     [self.openCards removeAllCards];
     return movedCards;
+}
+
+- (Card *)giveTopmostClosedCardToPlayer:(Player *)otherPlayer
+{
+    Card *card = [self.closedCards topmostCard];
+    
+    if (card) {
+        [otherPlayer.closedCards addCardToBottom:card];
+        [self.closedCards removeTopmostCard];
+    }
+    
+    return card;
 }
 
 @end

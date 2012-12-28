@@ -55,9 +55,7 @@
 
 - (void)dealloc
 {
-    #ifdef DEBUG
-    NSLog(@"dealloc %@", self);
-    #endif
+    DLog(@"dealloc %@", self);
 }
 
 #pragma mark - IBActions

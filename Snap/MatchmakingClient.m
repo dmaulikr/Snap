@@ -37,7 +37,7 @@
 
 - (void)connectToServerWithPeerID:(NSString *)peerID
 {
-    NSAssert(self.clientState == ClientStateSearchingForServers, @"Wrong state");
+    ZAssert(self.clientState == ClientStateSearchingForServers, @"Wrong state");
     self.clientState = ClientStateConnecting;
     self.serverPeerID = peerID;
     [self.session connectToPeer:peerID withTimeout:self.session.disconnectTimeout];
@@ -45,16 +45,14 @@
 
 - (void)dealloc
 {
-    #ifdef DEBUG
-    NSLog(@"dealloc %@", self);
-    #endif
+    DLog(@"dealloc %@", self);
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (void)disconnectFromServer
 {
-    NSAssert(self.clientState != ClientStateIdle, @"Wrong state");
+    ZAssert(self.clientState != ClientStateIdle, @"Wrong state");
     self.clientState = ClientStateIdle;
     [self.session disconnectFromAllPeers];
     self.session.available = NO;
@@ -69,9 +67,7 @@
 
 - (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state
 {
-    #ifdef DEBUG
-    NSLog(@"MatchmakingClient: peer %@ changed state %d", peerID, state);
-    #endif
+    DLog(@"MatchmakingClient: peer %@ changed state %d", peerID, state);
     
     switch (state) {
         case GKPeerStateAvailable:
@@ -120,26 +116,19 @@
 
 - (void)session:(GKSession *)session didReceiveConnectionRequestFromPeer:(NSString *)peerID
 {
-    #ifdef DEBUG
-    NSLog(@"MatchmakingClient: connection request from peer %@", peerID);
-    #endif
+    DLog(@"MatchmakingClient: connection request from peer %@", peerID);
 }
 
 // Also called when server explicity calls denyConnectionFromPeer, e.g., server already has max client connections
 - (void)session:(GKSession *)session connectionWithPeerFailed:(NSString *)peerID withError:(NSError *)error
 {
-    #ifdef DEBUG
-    NSLog(@"MatchmakingClient: connection with peer %@ failed %@", peerID, error);
-    #endif
-    
+    DLog(@"MatchmakingClient: connection with peer %@ failed %@", peerID, error);
     [self disconnectFromServer];
 }
 
 - (void)session:(GKSession *)session didFailWithError:(NSError *)error
 {
-    #ifdef DEBUG
-    NSLog(@"MatchmakingClient: session failed %@", error);
-    #endif
+    DLog(@"MatchmakingClient: session failed %@", error);
     
     if ([[error domain] isEqualToString:GKSessionErrorDomain]) {
         if ([error code] == GKSessionCannotEnableError) {

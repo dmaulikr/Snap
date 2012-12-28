@@ -22,7 +22,7 @@
     return [self packetWithPeerID:peerID];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (id)initWithPeerID:(NSString *)peerID
 {

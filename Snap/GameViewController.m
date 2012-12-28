@@ -44,14 +44,13 @@
 @property (nonatomic, weak) IBOutlet UIImageView *snapIndicatorTopImageView;
 @property (nonatomic, weak) IBOutlet UIImageView *snapIndicatorRightImageView;
 
+@property (nonatomic, strong) UIImageView *tappedView;
 @property (nonatomic, strong) UIAlertView *alertView;
 
 @property (nonatomic, strong) AVAudioPlayer *dealingCardsSound;
 @property (nonatomic, strong) AVAudioPlayer *turnCardSound;
 @property (nonatomic, strong) AVAudioPlayer *wrongMatchSound;
 @property (nonatomic, strong) AVAudioPlayer *correctMatchSound;
-
-@property (nonatomic, strong) UIImageView *tappedView;
 @end
 
 @implementation GameViewController
@@ -80,15 +79,12 @@
 
 - (void)dealloc
 {
-    #ifdef DEBUG
-    NSLog(@"dealloc %@", self);
-    #endif
-    
+    DLog(@"dealloc %@", self);
     [self.dealingCardsSound stop];
     [[AVAudioSession sharedInstance] setActive:NO error:nil];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (void)showPlayerLabels
 {
@@ -548,6 +544,36 @@
     [self.game beginRound];
 }
 
+- (void)removeAllRemainingCardViews
+{
+    for (PlayerPosition p = PlayerPositionBottom; p <= PlayerPositionRight; p++) {
+        Player *player = [self.game playerAtPosition:p];
+        
+        if (player) {
+            [self removeRemainingCardsFromStack:player.openCards forPlayer:player];
+            [self removeRemainingCardsFromStack:player.closedCards forPlayer:player];
+        }
+    }
+}
+
+- (void)removeRemainingCardsFromStack:(Stack *)stack forPlayer:(Player *)player
+{
+    NSTimeInterval delay = 0.0f;
+    
+    for (int i = 0; i < [stack cardCount]; i++) {
+        NSUInteger index = [stack cardCount] - i - 1;
+        CardView *cardView = [self cardViewForCard:stack.cards[index]];
+        
+        // Only animate removal of first 5 cards
+        if (i < 5) {
+            [cardView animateRemovalAtRoundEndForPlayer:player withDelay:delay];
+            delay += 0.05f;
+        } else {
+            [cardView removeFromSuperview];
+        }
+    }
+}
+
 #pragma mark - IBActions
 
 - (IBAction)exitAction:(id)sender
@@ -589,6 +615,7 @@
 
 - (IBAction)nextRoundAction:(id)sender
 {
+    [self.game nextRound];
 }
 
 #pragma mark - UIAlertViewDelegate
@@ -596,10 +623,10 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex != alertView.cancelButtonIndex) {
-        [self.game quitGameWithReason:QuitReasonUserQuit];
-        
         // To cancel performSelector:afterDealing... if the user exits during dealing
         [NSObject cancelPreviousPerformRequestsWithTarget:self];
+        
+        [self.game quitGameWithReason:QuitReasonUserQuit];
     }
 }
 
@@ -657,13 +684,56 @@
 - (void)game:(Game *)game didActivatePlayer:(Player *)player
 {
     [self showIndicatorForActivePlayer];
+    self.snapButton.enabled = YES;
 }
 
 - (void)game:(Game *)game player:(Player *)player turnedOverCard:(Card *)card
 {
+    // This is a quick fix to handle when, in a two-player game (server + 1 client), if the server turns over a card and immediately taps Snap when there is not a match, the client will show the wrong card being turned over (it works fine the other way around). The problem is that the server turns over the top card before its player has to pay a card to the client, but the client first handles the logic for paying the card and does not turn over the server's card until it receives the ActivatePlayer packet. Turning cards over at the receipt of the ActivatePlayer message causes this issue.
+    self.snapButton.enabled = player.position != PlayerPositionBottom;
+    
     [self.turnCardSound play];
     CardView *cardView = [self cardViewForCard:card];
     [cardView animateTurningOverForPlayer:player];
+}
+
+- (void)game:(Game *)game player:(Player *)player calledSnapWithMatchingPlayers:(NSSet *)matchingPlayers;
+{
+    [self.correctMatchSound play];
+    [self showSplashView:self.correctSnapImageView forPlayer:player];
+    [self showSnapIndicatorForPlayer:player];
+    [self performSelector:@selector(hideSnapIndicatorForPlayer:) withObject:player afterDelay:1.0f];
+    self.turnOverButton.enabled = NO;
+    self.centerLabel.text = @"*** Match! ***";
+    NSArray *array = @[player, matchingPlayers];
+    [self performSelector:@selector(playerWillReceiveCards:) withObject:array afterDelay:1.0f];
+}
+
+- (void)playerWillReceiveCards:(NSArray *)array
+{
+    Player *player = array[0];
+    NSSet *matchingPlayers = array[1];
+    
+    if (player.position == PlayerPositionBottom) {
+        self.centerLabel.text = @"You Receive Cards";
+    } else {
+        self.centerLabel.text = [NSString stringWithFormat:@"%@ Receives Cards", player.name];
+    }
+    
+    for (PlayerPosition p = player.position; p < player.position + 4; p++) {
+        Player *otherPlayer = [self.game playerAtPosition:p % 4];
+        
+        if (otherPlayer && [matchingPlayers containsObject:otherPlayer]) {
+            NSArray *cards = [otherPlayer giveAllOpenCardsToPlayer:player];
+            
+            [cards enumerateObjectsUsingBlock:^(Card *card, NSUInteger idx, BOOL *stop) {
+                CardView *cardView = [self cardViewForCard:card];
+                [cardView animateCloseAndMoveFromPlayer:otherPlayer toPlayer:player withDelay:0.0f];
+            }];
+        }
+    }
+    
+    [self performSelector:@selector(afterMovingCardsForPlayer:) withObject:player afterDelay:1.0f];
 }
 
 - (void)game:(Game *)game playerCalledSnapWithNoMatch:(Player *)player
@@ -674,6 +744,41 @@
     [self performSelector:@selector(hideSnapIndicatorForPlayer:) withObject:player afterDelay:1.0f];
     self.turnOverButton.enabled = NO;
     self.centerLabel.text = @"No Match!";
+    [self performSelector:@selector(playerMustPayCards:) withObject:player afterDelay:1.0f];
+}
+
+- (void)game:(Game *)game playerCalledSnapTooLate:(Player *)player
+{
+    [self showSnapIndicatorForPlayer:player];
+    [self performSelector:@selector(hideSnapIndicatorForPlayer:) withObject:player afterDelay:1.0f];
+}
+
+- (void)game:(Game *)game player:(Player *)fromPlayer paysCard:(Card *)card toPlayer:(Player *)toPlayer
+{
+    CardView *cardView = [self cardViewForCard:card];
+    [cardView animatePayCardFromPlayer:fromPlayer toPlayer:toPlayer];
+}
+
+- (void)playerMustPayCards:(Player *)player
+{
+    self.centerLabel.text = [NSString stringWithFormat:@"%@ Must Pay", player.name];
+    [self.game playerMustPayCards:player];
+    [self performSelector:@selector(afterMovingCardsForPlayer:) withObject:player afterDelay:1.0f];
+}
+
+- (void)afterMovingCardsForPlayer:(Player *)player
+{
+    BOOL changedPlayer = [self.game resumeAfterMovingCardsForPlayer:player];
+    self.snapButton.enabled = YES;
+    self.turnOverButton.enabled = YES;
+    
+    if ([[self.game playerAtPosition:PlayerPositionBottom] totalCardCount] == 0) {
+        self.snapButton.hidden = YES;
+    }
+    
+    if (!changedPlayer) {
+        [self showIndicatorForActivePlayer];
+    }
 }
 
 - (void)game:(Game *)game didRecycleCards:(NSArray *)recycledCards forPlayer:(Player *)player
@@ -724,6 +829,20 @@
 - (void)game:(Game *)game didQuitWithReason:(QuitReason)reason
 {
     [self.delegate gameViewController:self didQuitWithReason:reason];
+}
+
+- (void)game:(Game *)game roundDidEndWithWinner:(Player *)winner
+{
+    self.centerLabel.text = [NSString stringWithFormat:@"*** Winner: %@ ***", winner.name];
+    self.snapButton.hidden = YES;
+    self.nextRoundButton.hidden = !game.isServer;
+    [self updateWinsLabels];
+    [self hideActivePlayerIndicator];
+}
+
+- (void)gameDidBeginNewRound:(Game *)game
+{
+    [self removeAllRemainingCardViews];
 }
 
 @end

@@ -27,15 +27,15 @@
 
 - (void)addCardToTop:(Card *)card
 {
-    NSAssert(card, @"Card cannot be nil");
-    NSAssert([self.cards indexOfObject:card] == NSNotFound, @"Already have this card");
+    ZAssert(card, @"Card cannot be nil");
+    ZAssert([self.cards indexOfObject:card] == NSNotFound, @"Already have this card");
     [self.cards addObject:card];
 }
 
 - (void)addCardToBottom:(Card *)card
 {
-    NSAssert(card, @"Card cannot be nil");
-    NSAssert([self.cards indexOfObject:card] == NSNotFound, @"Already have this card");
+    ZAssert(card, @"Card cannot be nil");
+    ZAssert([self.cards indexOfObject:card] == NSNotFound, @"Already have this card");
     [self.cards insertObject:card atIndex:0];
 }
 

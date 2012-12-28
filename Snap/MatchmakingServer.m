@@ -25,6 +25,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    DLog(@"dealloc %@", self);
+}
+
 - (void)startAcceptingConnectionsForSessionID:(NSString *)sessionID
 {
     if (self.serverState == ServerStateIdle) {
@@ -38,16 +43,16 @@
 
 - (void)stopAcceptingConnections
 {
-    NSAssert(self.serverState == ServerStateAcceptingConnections, @"Wrong state");
+    ZAssert(self.serverState == ServerStateAcceptingConnections, @"Wrong state");
     self.serverState = ServerStateIgnoringNewConnections;
     self.session.available = NO;
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (void)endSession
 {
-    NSAssert(self.serverState != ServerStateIdle, @"Wrong state");
+    ZAssert(self.serverState != ServerStateIdle, @"Wrong state");
     self.serverState = ServerStateIdle;
     [self.session disconnectFromAllPeers];
     self.session.available = NO;
@@ -63,9 +68,7 @@
 
 - (void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state
 {
-    #ifdef DEBUG
-    NSLog(@"MatchmakingServer: peer %@ changed state %d", peerID, state);
-    #endif
+    DLog(@"MatchmakingServer: peer %@ changed state %d", peerID, state);
     
     switch (state) {
         case GKPeerStateAvailable:
@@ -99,17 +102,15 @@
 
 - (void)session:(GKSession *)session didReceiveConnectionRequestFromPeer:(NSString *)peerID
 {
-    #ifdef DEBUG
-    NSLog(@"MatchmakingServer: connection request from peer %@", peerID);
-    #endif
+    DLog(@"MatchmakingServer: connection request from peer %@", peerID);
     
     if (self.serverState == ServerStateAcceptingConnections && [self.connectedClients count] < self.maxClients) {
         NSError *error;
         
         if ([session acceptConnectionFromPeer:peerID error:&error]) {
-            NSLog(@"MatchmakingServer: connection accepted from peer %@", peerID);
+            DLog(@"MatchmakingServer: connection accepted from peer %@", peerID);
         } else {
-            NSLog(@"MatchmakingServer: error accepting connection from peer %@, %@", peerID, error);
+            DLog(@"MatchmakingServer: error accepting connection from peer %@, %@", peerID, error);
         }
     } else {
         [session denyConnectionFromPeer:peerID];
@@ -118,16 +119,12 @@
 
 - (void)session:(GKSession *)session connectionWithPeerFailed:(NSString *)peerID withError:(NSError *)error
 {
-    #ifdef DEBUG
-    NSLog(@"MatchmakingServer: connection with peer %@ failed %@", peerID, error);
-    #endif
+    DLog(@"MatchmakingServer: connection with peer %@ failed %@", peerID, error);
 }
 
 - (void)session:(GKSession *)session didFailWithError:(NSError *)error
 {
-    #ifdef DEBUG
-    NSLog(@"MatchmakingServer: session failed %@", error);
-    #endif
+    DLog(@"MatchmakingServer: session failed %@", error);
     
     if ([[error domain] isEqualToString:GKSessionErrorDomain]) {
         if ([error code] == GKSessionCannotEnableError) {

@@ -26,5 +26,7 @@
 - (Card *)turnOverTopCard;
 - (BOOL)shouldRecycle;
 - (NSArray *)recycleCards;
+- (Card *)giveTopmostClosedCardToPlayer:(Player *)otherPlayer;
+- (NSArray *)giveAllOpenCardsToPlayer:(Player *)otherPlayer;
 
 @end

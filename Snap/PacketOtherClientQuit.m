@@ -25,7 +25,7 @@
     return [self packetWithPeerID:peerID cards:cards];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (id)initWithPeerID:(NSString *)peerID cards:(NSDictionary *)cards
 {

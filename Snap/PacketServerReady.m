@@ -16,7 +16,7 @@
     return [[self alloc] initWithPlayers:players];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (id)initWithPlayers:(NSMutableDictionary *)players
 {
@@ -33,6 +33,10 @@
     
     [self.players enumerateKeysAndObjectsUsingBlock:^(id key, Player *player, BOOL *stop) {
         [data rw_appendString:player.peerID];
+        
+        // Work around as yet unresolved issue where player.name is occasionally nil
+        player.name = player.name ? player.name : key;
+        
         [data rw_appendString:player.name];
         [data rw_appendInt8:player.position];
     }];

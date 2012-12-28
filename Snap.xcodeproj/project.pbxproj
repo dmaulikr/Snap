@@ -187,6 +187,7 @@
 		D250FD111683C96E00CEF7DD /* Spades 2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC951683C96E00CEF7DD /* Spades 2@2x.png */; };
 		D250FD121683C96E00CEF7DD /* Spades 3.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC961683C96E00CEF7DD /* Spades 3.png */; };
 		D250FD151683D1DB00CEF7DD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D250FD141683D1DB00CEF7DD /* QuartzCore.framework */; };
+		D256D65A168DCCEF00B241D9 /* PacketPlayerCalledSnap.m in Sources */ = {isa = PBXBuildFile; fileRef = D256D659168DCCEF00B241D9 /* PacketPlayerCalledSnap.m */; };
 		D27D09AF1680E879007617C8 /* GameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D27D09AD1680E879007617C8 /* GameViewController.xib */; };
 		D27F2858168C7C1200B6A268 /* PacketPlayerShouldSnap.m in Sources */ = {isa = PBXBuildFile; fileRef = D27F2856168C7C1200B6A268 /* PacketPlayerShouldSnap.m */; };
 		D28BF846167F98BA00988577 /* UIButton+SnapAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = D28BF845167F98BA00988577 /* UIButton+SnapAdditions.m */; };
@@ -407,6 +408,8 @@
 		D250FC951683C96E00CEF7DD /* Spades 2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spades 2@2x.png"; sourceTree = "<group>"; };
 		D250FC961683C96E00CEF7DD /* Spades 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Spades 3.png"; sourceTree = "<group>"; };
 		D250FD141683D1DB00CEF7DD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		D256D658168DCCEF00B241D9 /* PacketPlayerCalledSnap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PacketPlayerCalledSnap.h; path = Snap/PacketPlayerCalledSnap.h; sourceTree = "<group>"; };
+		D256D659168DCCEF00B241D9 /* PacketPlayerCalledSnap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PacketPlayerCalledSnap.m; path = Snap/PacketPlayerCalledSnap.m; sourceTree = "<group>"; };
 		D27D09AE1680E879007617C8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Snap/en.lproj/GameViewController.xib; sourceTree = "<group>"; };
 		D27F2856168C7C1200B6A268 /* PacketPlayerShouldSnap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PacketPlayerShouldSnap.m; path = Snap/PacketPlayerShouldSnap.m; sourceTree = "<group>"; };
 		D27F2857168C7C1200B6A268 /* PacketPlayerShouldSnap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PacketPlayerShouldSnap.h; path = Snap/PacketPlayerShouldSnap.h; sourceTree = "<group>"; };
@@ -755,8 +758,10 @@
 				D22021B9168B86C800DDFEE3 /* PacketDealCards.m */,
 				D2AA5132168487D80068E28E /* PacketOtherClientQuit.h */,
 				D2AA5133168487D80068E28E /* PacketOtherClientQuit.m */,
-				D27F2856168C7C1200B6A268 /* PacketPlayerShouldSnap.m */,
+				D256D658168DCCEF00B241D9 /* PacketPlayerCalledSnap.h */,
+				D256D659168DCCEF00B241D9 /* PacketPlayerCalledSnap.m */,
 				D27F2857168C7C1200B6A268 /* PacketPlayerShouldSnap.h */,
+				D27F2856168C7C1200B6A268 /* PacketPlayerShouldSnap.m */,
 				D2AA5134168487D80068E28E /* PacketServerReady.h */,
 				D2AA5135168487D80068E28E /* PacketServerReady.m */,
 				D2AA5136168487D80068E28E /* PacketSignInResponse.h */,
@@ -1053,6 +1058,7 @@
 				D22021BA168B86C800DDFEE3 /* PacketActivatePlayer.m in Sources */,
 				D22021BB168B86C800DDFEE3 /* PacketDealCards.m in Sources */,
 				D27F2858168C7C1200B6A268 /* PacketPlayerShouldSnap.m in Sources */,
+				D256D65A168DCCEF00B241D9 /* PacketPlayerCalledSnap.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

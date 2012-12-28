@@ -20,5 +20,7 @@ const CGFloat CardHeight;
 - (void)animateTurningOverForPlayer:(Player *)player;
 - (void)animateRecycleForPlayer:(Player *)player withDelay:(NSTimeInterval)delay;
 - (void)animateCloseAndMoveFromPlayer:(Player *)fromPlayer toPlayer:(Player *)toPlayer withDelay:(NSTimeInterval)delay;
+- (void)animatePayCardFromPlayer:(Player *)fromPlayer toPlayer:(Player *)toPlayer;
+- (void)animateRemovalAtRoundEndForPlayer:(Player *)player withDelay:(NSTimeInterval)delay;
 
 @end

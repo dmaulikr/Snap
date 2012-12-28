@@ -13,6 +13,7 @@
 #import "PacketOtherClientQuit.h"
 #import "PacketDealCards.h"
 #import "PacketPlayerShouldSnap.h"
+#import "PacketPlayerCalledSnap.h"
 #import "Card.h"
 
 @implementation Packet
@@ -26,12 +27,12 @@
 {
     // [data length] returns the number of bytes
     if ([data length] < PACKET_HEADER_SIZE) {
-        NSLog(@"Error: packet too small");
+        DLog(@"Error: packet too small");
         return nil;
     }
     
     if ([data rw_int32AtOffset:0] != 'SNAP') {
-        NSLog(@"Error: packet has invalid header");
+        DLog(@"Error: packet has invalid header");
         return nil;
     }
     
@@ -69,12 +70,17 @@
             packet = [PacketPlayerShouldSnap packetWithData:data];
             break;
             
+        case PacketTypePlayerCalledSnap:
+            packet = [PacketPlayerCalledSnap packetWithData:data];
+            break;
+            
         case PacketTypeOtherClientQuit:
             packet = [PacketOtherClientQuit packetWithData:data];
             break;
             
         default:
-            NSLog(@"Error: packet has invalid type");
+            DLog(@"Error: packet has invalid type");
+            return nil;
             break;
     }
     
@@ -100,7 +106,7 @@
             int value = [data rw_int8AtOffset:offset];
             offset++;
             Card *card = [[Card alloc] initWithSuit:suit value:value];
-            array[i] = card;
+            [array addObject:card];
         }
         
         cards[peerID] = array;
@@ -116,6 +122,7 @@
         _packetNumber = -1; // 0xffffffff
         
         _packetType = packetType;
+        _sendReliably = YES;
     }
     
     return self;
@@ -151,7 +158,7 @@
     }];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (void)addPayloadToData:(NSMutableData *)data
 {

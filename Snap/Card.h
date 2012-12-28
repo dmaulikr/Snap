@@ -14,5 +14,6 @@
 
 - (id)initWithSuit:(Suit)suit value:(int)value;
 - (BOOL)isEqualToCard:(Card *)otherCard;
+- (BOOL)matchesCard:(Card *)otherCard;
 
 @end

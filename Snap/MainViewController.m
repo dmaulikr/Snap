@@ -55,12 +55,10 @@
 
 - (void)dealloc
 {
-    #ifdef DEBUG
-    NSLog(@"dealloc %@", self);
-    #endif
+    DLog(@"dealloc %@", self);
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (void)showDisconnectedAlert
 {
@@ -114,7 +112,7 @@
     }];
     
     // Animate cards onscreen
-    [UIView animateWithDuration:0.65f animations:^{
+    [UIView animateWithDuration:0.65f delay:0.5f options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.sImageView.center = CGPointMake(80.0f, 108.0f);
         self.sImageView.transform = CGAffineTransformMakeRotation(-0.22f);
         
@@ -148,10 +146,10 @@
     self.buttonsEnabled = NO;
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-        [self.cards enumerateObjectsUsingBlock:^(UIImageView *card, NSUInteger idx, BOOL *stop) {
-            if (![card isEqual:self.aImageView]) {
-                card.center = self.aImageView.center;
-                card.transform = self.aImageView.transform;
+        [self.cards enumerateObjectsUsingBlock:^(UIImageView *cardView, NSUInteger idx, BOOL *stop) {
+            if (![cardView isEqual:self.aImageView]) { // "A" card does not animate horizontally
+                cardView.center = self.aImageView.center;
+                cardView.transform = self.aImageView.transform;
             }
         }];
     } completion:^(BOOL finished) {
@@ -160,13 +158,13 @@
         
         // Animate cards offscreen
         [UIView animateWithDuration:1.0f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
-            [self.cards enumerateObjectsUsingBlock:^(UIImageView *card, NSUInteger idx, BOOL *stop) {
-                card.center = point;
+            [self.cards enumerateObjectsUsingBlock:^(UIImageView *cardView, NSUInteger idx, BOOL *stop) {
+                cardView.center = point;
             }];
         } completion:block];
         
         // Fade out buttons
-        [UIView animateWithDuration:1.0f delay:0.3f options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [UIView animateWithDuration:0.3f delay:0.3f options:UIViewAnimationOptionCurveEaseOut animations:^{
             [self.buttons enumerateObjectsUsingBlock:^(UIButton *button, NSUInteger idx, BOOL *stop) {
                 button.alpha = 0.0f;
             }];
@@ -200,6 +198,13 @@
 
 - (IBAction)singlePlayerGameAction:(id)sender
 {
+    if (self.buttonsEnabled) {
+        [self performExitAnimationWithCompletionBlock:^(BOOL finished) {
+            [self startGameWithBlock:^(Game *game) {
+                [game startSinglePlayerGame];
+            }];
+        }];
+    }
 }
 
 #pragma mark - HostViewControllerDelegate

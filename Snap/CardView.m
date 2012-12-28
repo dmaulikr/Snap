@@ -138,7 +138,28 @@ const CGFloat CardHeight = 99.0f;
     } completion:nil];
 }
 
-#pragma mark - Private methods
+- (void)animatePayCardFromPlayer:(Player *)fromPlayer toPlayer:(Player *)toPlayer
+{
+    [self.superview sendSubviewToBack:self];
+    CGPoint point = [self centerForPlayer:toPlayer];
+    self.angle = [self angleForPlayer:toPlayer];
+    
+    [UIView animateWithDuration:0.4f delay:0.0f options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self.center = point;
+        self.transform = CGAffineTransformMakeRotation(self.angle);
+    } completion:nil];
+}
+
+- (void)animateRemovalAtRoundEndForPlayer:(Player *)player withDelay:(NSTimeInterval)delay
+{
+    [UIView animateWithDuration:0.2f delay:delay options:UIViewAnimationOptionCurveEaseIn animations:^{
+        self.center = CGPointMake(self.center.x, self.superview.bounds.size.height + CardHeight);
+    } completion:^(BOOL finished) {
+        [self removeFromSuperview];
+    }];
+}
+
+#pragma mark - Private
 
 - (void)loadFront
 {

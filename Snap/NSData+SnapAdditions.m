@@ -14,27 +14,27 @@
 
 - (char)rw_int8AtOffset:(size_t)offset
 {
-    const char *bytes = (const char *)[self bytes];
-    return bytes[offset];
+    const char *charBytes = (const char *)[self bytes];
+    return charBytes[offset];
 }
 
 - (short)rw_int16AtOffset:(size_t)offset
 {
-    const short *bytes = (const short *)[self bytes];
-    return ntohs(bytes[offset / 2]);
+    const short *shortBytes = (const short *)[self bytes];
+    return ntohs(shortBytes[offset / 2]);
 }
 
 - (int)rw_int32AtOffset:(size_t)offset
 {
-    const int *bytes = (const int *)[self bytes];
-    return ntohl(bytes[offset / 4]);
+    const int *intBytes = (const int *)[self bytes];
+    return ntohl(intBytes[offset / 4]);
 }
 
 - (NSString *)rw_stringAtOffset:(size_t)offset bytesRead:(size_t *)amount
 {
-    const char *bytes = (const char *)[self bytes];
-    NSString *string = @(bytes + offset);
-    *amount = strlen(bytes + offset) + 1;
+    const char *charBytes = (const char *)[self bytes];
+    NSString *string = [NSString stringWithUTF8String:charBytes + offset]; // @(charBytes + offset);
+    *amount = strlen(charBytes + offset) + 1;
     return string;
 }
 
@@ -76,11 +76,6 @@
 
 - (void)rw_appendString:(NSString *)string
 {
-    if (!string) {
-        // TODO: Find out why string is sometimes nil!
-        string = @"Player";
-    }
-    
     const char *cString = [string UTF8String];
     [self appendBytes:cString length:strlen(cString) + 1]; // +1 for UTF8String's nill-termination byte
 }

@@ -14,10 +14,10 @@
 
 + (id)packetWithPeerID:(NSString *)peerID
 {
-	return [[[self class] alloc] initWithPeerID:peerID];
+	return [[self alloc] initWithPeerID:peerID];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 + (id)packetWithData:(NSData *)data
 {
@@ -30,6 +30,7 @@
 {
 	if ((self = [super initWithType:PacketTypePlayerShouldSnap])) {
 		self.peerID = peerID;
+        self.sendReliably = NO;
 	}
     
 	return self;

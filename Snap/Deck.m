@@ -35,13 +35,13 @@
         [self.cards removeObject:card];
     }
     
-    NSAssert([self cardsRemaining] == 0, @"Original deck should now be empty");
+    ZAssert([self cardsRemaining] == 0, @"Original deck should now be empty");
     self.cards = shuffled;
 }
 
 - (Card *)draw
 {
-    NSAssert([self cardsRemaining] > 0, @"No more cards in the deck");
+    ZAssert([self cardsRemaining] > 0, @"No more cards in the deck");
     Card *card = [self.cards lastObject];
     [self.cards removeLastObject];
     return card;
@@ -52,7 +52,7 @@
     return [self.cards count];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (void)setUpCards
 {
@@ -64,7 +64,7 @@
         }
     }
     
-    NSAssert([self cardsRemaining] == 52, @"Deck should contain 52 cards");
+    ZAssert([self cardsRemaining] == 52, @"Deck should contain 52 cards");
 }
 
 @end

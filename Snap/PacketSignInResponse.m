@@ -17,12 +17,19 @@
 
 + (id)packetWithData:(NSData *)data
 {
+    // Getting good data here, but then playerName is occasionally nil
+    // TODO: Investigate rw_stringAtOffset:bytesRead:
+    DLog(@"\n\n\ndata = %@\n\n\n", data);
+    
     size_t count;
     NSString *playerName = [data rw_stringAtOffset:PACKET_HEADER_SIZE bytesRead:&count];
+    
+    DLog(@"\n\n\ncount = %zi\n\n\n", count);
+    
     return [self packetWithPlayerName:playerName];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 - (id)initWithPlayerName:(NSString *)name
 {

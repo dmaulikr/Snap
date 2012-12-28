@@ -15,7 +15,7 @@
     return [[self alloc] initWithCards:cards startingWithPlayerPeerID:playerPeerID];
 }
 
-#pragma mark - Private methods
+#pragma mark - Private
 
 + (id)packetWithData:(NSData *)data
 {

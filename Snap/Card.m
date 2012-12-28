@@ -12,7 +12,7 @@
 
 - (id)initWithSuit:(Suit)suit value:(int)value
 {
-    NSAssert(value >= CardAce && value <= CardKing, @"Invalid card value");
+    ZAssert(value >= CardAce && value <= CardKing, @"Invalid card value");
     
     if (self = [super init]) {
         _suit = suit;
@@ -24,7 +24,14 @@
 
 - (BOOL)isEqualToCard:(Card *)otherCard
 {
+	NSParameterAssert(otherCard);
     return otherCard.suit == self.suit && otherCard.value == self.value;
+}
+
+- (BOOL)matchesCard:(Card *)otherCard
+{
+    NSParameterAssert(otherCard);
+    return self.value == otherCard.value;
 }
 
 @end

@@ -19,6 +19,7 @@
 
 @property (nonatomic, assign) PacketType packetType;
 @property (nonatomic, assign) int packetNumber;
+@property (nonatomic, assign) BOOL sendReliably;
 
 + (id)packetWithType:(PacketType)packetType;
 + (id)packetWithData:(NSData *)data;
