@@ -844,7 +844,6 @@ PlayerPosition testPosition;
         case PacketTypeServerReady:
             if (self.state == GameStateWaitingForReady) {
                 self.players = ((PacketServerReady *)packet).players;
-                DLog(@"The players are %@", self.players);
                 [self changeRelativePositionsOfPlayers];
                 Packet *packet = [Packet packetWithType:PacketTypeClientReady];
                 [self sendPacketToServer:packet];
