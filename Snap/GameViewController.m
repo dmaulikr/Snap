@@ -666,7 +666,7 @@
         for (PlayerPosition p = startingPlayer.position; p < startingPlayer.position + 4; p++) {
             Player *player = [self.game playerAtPosition:p % 4];
             
-            if (player && i < [startingPlayer.closedCards cardCount]) {
+            if (player && i < [player.closedCards cardCount]) {
                 CardView *cardView = [[CardView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CardWidth, CardHeight)];
                 cardView.card = player.closedCards.cards[i];
                 [self.cardContainerView addSubview:cardView];
@@ -677,6 +677,7 @@
             }
         }
     }
+
     
     [self performSelector:@selector(afterDealing) withObject:nil afterDelay:delay];
 }
