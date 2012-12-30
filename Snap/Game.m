@@ -101,6 +101,8 @@ PlayerPosition testPosition;
     }];
     
     Packet *packet = [Packet packetWithType:PacketTypeSignInRequest];
+    
+// Step #2 Server sends signin request to all clients
     [self sendPacketToAllClients:packet];
 }
 
@@ -780,9 +782,11 @@ PlayerPosition testPosition;
 {
     switch (packet.packetType) {
         case PacketTypeSignInResponse:
+// Step #4 Server receives signin response individually from each client and sets player.name
             if (self.state == GameStateWaitingForSignIn) {
                 player.name = ((PacketSignInResponse *)packet).playerName;
                 
+// Step #5 Once server has received signin responses from all clients, it changes game state to ready and sends server ready packet out to all clients
                 if ([self receivedResponsesFromAllPlayers]) {
                     self.state = GameStateWaitingForReady;
                     Packet *packet = [PacketServerReady packetWithPlayers:self.players];
@@ -792,8 +796,10 @@ PlayerPosition testPosition;
             break;
             
         case PacketTypeClientReady:
+// Step #7 Server receives client ready response individually from each client
         	DLog(@"State: %d, received responses: %d", self.state, [self receivedResponsesFromAllPlayers]);
             
+// Step #8 Once server has received client ready responses from all clients, it begins game
             if (self.state == GameStateWaitingForReady && [self receivedResponsesFromAllPlayers]) {
             	DLog(@"Beginning game");
                 [self beginGame];
@@ -834,6 +840,7 @@ PlayerPosition testPosition;
 {
     switch (packet.packetType) {
         case PacketTypeSignInRequest:
+// Step #3 Each client receives signin request from server and sends signin response back to server with player name
             if (self.state == GameStateWaitingForSignIn) {
                 self.state = GameStateWaitingForReady;
                 Packet *packet = [PacketSignInResponse packetWithPlayerName:self.localPlayerName];
@@ -842,6 +849,7 @@ PlayerPosition testPosition;
             break;
             
         case PacketTypeServerReady:
+// Step #6 Each client receives server ready packet and responds with client ready
             if (self.state == GameStateWaitingForReady) {
                 self.players = ((PacketServerReady *)packet).players;
                 [self changeRelativePositionsOfPlayers];
@@ -892,14 +900,25 @@ PlayerPosition testPosition;
 
 - (BOOL)receivedResponsesFromAllPlayers
 {
-    __block BOOL receivedResponsesFromAllPlayers = YES;
+    for (NSString *peerID in self.players)
+    {
+        Player *player = [self playerWithPeerID:peerID];
+        
+        if (!player.receivedResponse)
+            return NO;
+    }
     
-    [self.players enumerateKeysAndObjectsUsingBlock:^(id key, Player *player, BOOL *stop) {
-        if (!player.receivedResponse) receivedResponsesFromAllPlayers = NO;
-        *stop = YES;
-    }];
+    return YES;
     
-    return receivedResponsesFromAllPlayers;
+    // For some reason we cannot enumerate self.players using a block (it results in an exception)
+//    __block BOOL receivedResponsesFromAllPlayers = YES;
+//        
+//    [self.players enumerateKeysAndObjectsUsingBlock:^(id key, Player *player, BOOL *stop) {
+//        if (!player.receivedResponse) receivedResponsesFromAllPlayers = NO;
+//        *stop = YES;
+//    }];
+//    
+//    return receivedResponsesFromAllPlayers;
 }
 
 - (void)handleDealCardsPacket:(PacketDealCards *)packet

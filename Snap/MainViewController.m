@@ -222,6 +222,7 @@
         self.performAnimations = YES;
         
         [self startGameWithBlock:^(Game *game) {
+// Step #1 Start game with server player
             [game startServerGameWithSession:session playerName:name clients:clients];
         }];
     }];
