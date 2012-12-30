@@ -61,7 +61,6 @@
 		D22021B5168B86B400DDFEE3 /* CardView.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021B4168B86B400DDFEE3 /* CardView.m */; };
 		D22021BA168B86C800DDFEE3 /* PacketActivatePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021B7168B86C800DDFEE3 /* PacketActivatePlayer.m */; };
 		D22021BB168B86C800DDFEE3 /* PacketDealCards.m in Sources */ = {isa = PBXBuildFile; fileRef = D22021B9168B86C800DDFEE3 /* PacketDealCards.m */; };
-		D22021BD168B86E300DDFEE3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D22021BC168B86E300DDFEE3 /* Default-568h@2x.png */; };
 		D250FC971683C96E00CEF7DD /* Spades 3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC1B1683C96E00CEF7DD /* Spades 3@2x.png */; };
 		D250FC981683C96E00CEF7DD /* Spades 4.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC1C1683C96E00CEF7DD /* Spades 4.png */; };
 		D250FC991683C96E00CEF7DD /* Spades 4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D250FC1D1683C96E00CEF7DD /* Spades 4@2x.png */; };
@@ -1021,7 +1020,6 @@
 				D2C764031689BF6D00952278 /* Dealing.caf in Resources */,
 				D2C764041689BF6D00952278 /* TurnCard.caf in Resources */,
 				D2C764051689BF6D00952278 /* WrongMatch.caf in Resources */,
-				D22021BD168B86E300DDFEE3 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
