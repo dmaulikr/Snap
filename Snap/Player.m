@@ -25,7 +25,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@ peerID = %@, name = %@, position = %d", [super description], self.peerID, self.name, self.position];
+    return [NSString stringWithFormat:@"%@ peerID = %@, name = %@, position = %d, received response = %i", [super description], self.peerID, self.name, self.position, self.receivedResponse];
 }
 
 - (void)dealloc
